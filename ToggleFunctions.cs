@@ -12,11 +12,16 @@ using Sons.Settings;
 using Sons.Wearable.Armour;
 using Sons.Wearable;
 using static Sons.Wearable.Armour.PlayerArmourSystem;
+using Sons.Items.Core;
 
 namespace FrankyModMenu
 {
     internal class ToggleFunctions
     {
+        public class ArmourValues
+        {
+            public float DefaultArmour;
+        }
         public static void GodMode(bool onoff)
         {
             Config.GodMode.Value = onoff;
@@ -107,165 +112,81 @@ namespace FrankyModMenu
             Config.IsMarioMode.Value = onoff;
         }
 
-        /*private static List<PlayerArmourSystem.ArmourSlotData> _armourSlotData;
-        public static List<ArmourPiece> _armourPieces = new List<ArmourPiece>();
-
-        public static ArmourPiece GetArmourPieceById(int itemId)
+        public static void UnbreakableArmour(bool onoff)
         {
-            return _armourPieces.Find((ArmourPiece x) => x.ItemId == itemId);
-        }
-
-        
-       private static int GetItemIdForSlot(WearableSlots slot)
-        {
-            var singleSlotCollection = new List<Sons.Wearable.WearablePiece.SlotAndRenderable>
+            Config.UnBreakableArmor.Value = onoff;
+            if (onoff)
             {
-                new Sons.Wearable.WearablePiece.SlotAndRenderable { Slot = slot }
-            };
-
-            foreach (var equippedArmor in _armourPieces)
-            {
-                // Check if the slot is valid and the item ID is valid
-                if (IsSlotValid(singleSlotCollection) && IsItemIdValid(equippedArmor.ItemId))
-                {
-                    // If a valid item ID is found in the slots, return it
-                    return equippedArmor.ItemId;
-                }
+                SetUnbreakableArmour();
+                return;
             }
-
-            // If no valid item ID is found, return a default value
-            return 0;
+            RestoreDefaultArmorValues();
         }
-        private static bool IsSlotValid(IEnumerable<WearablePiece.SlotAndRenderable> slots)
-        {
-            // Convert the IEnumerable to List before using Any
-            var slotList = slots.ToList();
 
-            // Check if any slot in the collection is valid for armor
-            foreach (var slot in slotList)
+        public static void SetUnbreakableArmour()
+        {
+
+            float unbreakableArmourPoints = 50000f;
+
+            var armorSystem = LocalPlayer.Transform.Find("PlayerAnimator/ArmourSystem").GetComponent<PlayerArmourSystem>();
+            if (armorSystem != null)
             {
-                if (slot.Slot == WearableSlots.Head ||
-                    slot.Slot == WearableSlots.Torso ||
-                    slot.Slot == WearableSlots.LeftBicep ||
-                    slot.Slot == WearableSlots.RightBicep ||
-                    slot.Slot == WearableSlots.LeftForearm ||
-                    slot.Slot == WearableSlots.RightForearm ||
-                    slot.Slot == WearableSlots.LeftThigh ||
-                    slot.Slot == WearableSlots.RightThigh ||
-                    slot.Slot == WearableSlots.LeftShin ||
-                    slot.Slot == WearableSlots.RightShin)
+                
                 {
-                    // If any valid slot is found, return true
-                    return true;
-                }
-            }
-
-            // If no valid slot is found, return false
-            return false;
-        }
-
-        private static bool IsSlotValid(WearableSlots slot)
-        {
-            // Check if any slot in the collection is valid for armor
-            return slot != WearableSlots.Head &&
-                   slot != WearableSlots.Torso &&
-                   slot != WearableSlots.LeftBicep &&
-                   slot != WearableSlots.RightBicep &&
-                   slot != WearableSlots.LeftForearm &&
-                   slot != WearableSlots.RightForearm &&
-                   slot != WearableSlots.LeftThigh &&
-                   slot != WearableSlots.RightThigh &&
-                   slot != WearableSlots.LeftShin &&
-                   slot != WearableSlots.RightShin;
-        }
-
-        private static bool IsItemIdValid(int itemId)
-        {
-            // List of valid item IDs
-            List<int> validItemIds = new List<int> { 473, 494, 519, 554, 593 };
-
-            // Check if the provided item ID is in the list of valid item IDs
-            return validItemIds.Contains(itemId);
-        }
-
-        public class ArmourSystem : MonoBehaviour
-        {
-            private static float unbreakableArmourPoints = 50000f;
-            private static List<PlayerArmourSystem.ArmourSlotData> _armourSlotData;
-            private static List<ArmourPiece> _armourPieces = new List<ArmourPiece>();
-
-            private void Start()
-            {
-                // Start the coroutine when the MonoBehaviour initializes
-                CheckArmourPointsPeriodically().RunCoro();
-            }
-
-            private IEnumerator CheckArmourPointsPeriodically()
-            {
-                // Run the check every second (adjust the interval as needed)
-                while (true)
-                {
-                    yield return new WaitForSeconds(10f);
-
-                    foreach (var armourSlotData in _armourSlotData)
+                    for (int i = 0; i < armorSystem._armourSlotData.Count; i++)
                     {
-                        // Check if RemainingArmourPoints fall below 5000 and reset if needed
-                        if (armourSlotData.RemainingArmourpoints < 5000)
+
+                        var currentSlot = armorSystem._armourSlotData[i];
+                        var currentArmourPieces = currentSlot.ArmourPiece;
+
+                        if (currentArmourPieces != null)
                         {
-                            armourSlotData.RemainingArmourpoints = unbreakableArmourPoints;
-                        }
-                    }
-                }
-            }
-
-            private static void UpdateArmourPoints(ArmourSlotData armourSlotData)
-            {
-                // Update RemainingArmourPoints directly within ArmourSlotData
-                armourSlotData.RemainingArmourpoints = unbreakableArmourPoints;
-            }
-
-            public static void UnbreakableArmor(bool onoff)
-            {
-                if (onoff) 
-                { 
-                Array values = Enum.GetValues(typeof(WearableSlots));
-                _armourSlotData = new List<PlayerArmourSystem.ArmourSlotData>(values.Length);
-
-                    foreach (object obj in values)
-                    {
-                        WearableSlots slot = (WearableSlots)obj;
-
-                        if (IsSlotValid(slot))
-                        {
-                            int itemId = GetItemIdForSlot(slot);
-
-                            // Check if the item ID is in the list of valid item IDs
-                            if (IsItemIdValid(itemId))
-                            {
-                                foreach (var armourSlotData in _armourSlotData)
-                                {
-                                    // Update ArmourPoints for the ArmourSlotData
-                                    UpdateArmourPoints(armourSlotData);
-                                }
-
-                                // Add the armour data to the list
-                                _armourSlotData.Add(new PlayerArmourSystem.ArmourSlotData
-                                {
-                                    Slot = slot,
-                                    ArmourPiece = GetArmourPieceById(itemId),
-                                    ArmourInstance = null,
-                                    RemainingArmourpoints = unbreakableArmourPoints
-                                });
-                            }
+                                RLog.Msg($"Slot {i} Armour Pieces == {currentArmourPieces}");
+                                currentSlot.RemainingArmourpoints = unbreakableArmourPoints;
                         }
                         else
                         {
-                            // Skip slots that don't hold armor
-                            continue;
+                            RLog.Msg($"Slot {i} Armour Pieces == null");
+                        }
+        }   }   }   }
+
+
+        private static Dictionary<int, ArmourValues> defaultArmourValues = new()
+        {
+            { 473, new ArmourValues { DefaultArmour = 25f } },  // Leaf
+            { 519, new ArmourValues { DefaultArmour = 40f } },  // Deer
+            { 494, new ArmourValues { DefaultArmour = 65f } },  // Bone
+            { 593, new ArmourValues { DefaultArmour = 80f } },  // Creepy
+            { 554, new ArmourValues { DefaultArmour = 100f } }   // Tech
+        };
+
+        public static void RestoreDefaultArmorValues()
+        {
+            var armorSystem = LocalPlayer.Transform.Find("PlayerAnimator/ArmourSystem").GetComponent<PlayerArmourSystem>();
+
+            if (armorSystem != null)
+            {
+                foreach (var armorSlot in armorSystem._armourSlotData)
+                {
+                    int itemId = armorSlot.ArmourPiece?.ItemId ?? -1; // Assuming ItemId is an int property in your ArmourPiece class
+
+                    // Use GetArmourPieceById to retrieve the WearablePiece based on the item ID
+                    WearablePiece armorPiece = armorSystem.GetArmourPieceById(itemId);
+
+                    if (armorPiece != null)
+                    {
+                        if (defaultArmourValues.TryGetValue(itemId, out var defaultValues))
+                        {
+                            armorSlot.RemainingArmourpoints = defaultValues.DefaultArmour;
+                            RLog.Msg($"Restored default armor value for ItemId {itemId}");
+                        }
+                        else
+                        {
+                            RLog.Msg($"Default values not found for ItemId {itemId}");
                         }
                     }
-                }
-            }
-        }*/
-    }
-}
+                    else
+                    {
+                        RLog.Msg($"ArmourPiece not found for ItemId {itemId}");
+                    }
+}   }   }   }   }

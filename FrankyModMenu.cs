@@ -28,6 +28,7 @@ public class FrankyModMenu : SonsMod
     private bool isFalling = false;
     private bool AlternateJumpSound = false;
     public static float baseSpeedMultiplier = TimeOfDayHolder.GetBaseSpeedMultiplier();
+    public static bool _firstStart = true;
 
     protected override void OnInitializeMod()
     {
@@ -58,6 +59,9 @@ public class FrankyModMenu : SonsMod
     }
     protected override void OnGameStart()
     {
+        _firstStart = false;
+        RLog.Msg("OnGameStart _firstStart set to false");
+
         if (CutsceneManager.GetActiveCutScene != null)
         {
             WaitForCutscene().RunCoro();
@@ -69,6 +73,17 @@ public class FrankyModMenu : SonsMod
             WaitForLocalPlayerFirst().RunCoro();
         }
     }
+    /*
+    protected override void OnSonsSceneInitialized(ESonsScene sonsScene)
+    {
+        if ((sonsScene == ESonsScene.Title) && (_firstStart == false))
+        {
+            RLog.Msg("_firstStart false and In Title screen, setting ReturnedToTitleScreen to true ");
+            CustomSettingsReg.ReturnedToTitleScreen = true;
+        }
+
+    }
+    */
     private void OnSettingsUiClosed()
     {
         Config.UpdateSettings();
@@ -87,10 +102,8 @@ public class FrankyModMenu : SonsMod
         yield return new WaitForSeconds(5f);
         //RLog.Msg("Waited for 5 seconds to make sure player has control");
         SettingsRegistry.CreateSettings(this, null, typeof(Config), callback: OnSettingsUiClosed);
-        if (Config.ShouldSaveSettings.Value == false)
-        {
-            Config.RestoreDefaults();
-        }
+        Config.UpdateOrRestoreDefaults();
+        
     }
 
     public IEnumerator WaitForLocalPlayer()

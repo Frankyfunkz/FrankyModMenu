@@ -187,28 +187,5 @@ namespace FrankyModMenu
                 item.MeleeWeaponData.Damage = defaultValues.Damage * floatValue;
             }
         }
-
-        
-
-        /*public static void UnbreakableArmor()
-        {
-
-            //LocalPlayer.Stats._armourSystem = 
-
-               Array values = Enum.GetValues(typeof(WearableSlots));
-            _armourSlotData = new List<PlayerArmourSystem.ArmourSlotData>(values.Length);
-            
-            foreach (object obj in values)
-            {
-                _armourSlotData.Add(new PlayerArmourSystem.ArmourSlotData
-                {
-                    Slot = (WearableSlots)obj,
-                    ArmourPiece = GetArmourPieceById(494, 593, 519, ),
-                    ArmourInstance = null,
-                    RemainingArmourpoints = 50000f
-                });
-            }
-
-        }*/
     }
 }

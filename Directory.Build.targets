@@ -38,6 +38,9 @@
         <Message Text="Creating mod directory at '$(BuildModDir)'." Importance="high"/>
         <Copy SourceFiles="$(OutputAssemblyName).dll" DestinationFiles="$(BuildModDir)\Mods\$(AssemblyName).dll" Condition="$(CanCopy)"/>
         <Copy SourceFiles="$(OutputPath)manifest.json" DestinationFiles="$(BuildModDir)\Mods\$(AssemblyName)\manifest.json" Condition="'$(CanCopy)' AND Exists('$(OutputPath)manifest.json')"/>
+		<Copy SourceFiles="MarioJump1.mp3" DestinationFiles="$(BuildModDir)\Mods\$(AssemblyName)\MarioJump1.mp3" Condition="$(CanCopy)"/>
+		<Copy SourceFiles="MarioJump2.mp3" DestinationFiles="$(BuildModDir)\Mods\$(AssemblyName)\MarioJump2.mp3" Condition="$(CanCopy)"/>
+		<Copy SourceFiles="MarioFalling.mp3" DestinationFiles="$(BuildModDir)\Mods\$(AssemblyName)\MarioFalling.mp3" Condition="$(CanCopy)"/>
     </Target>
     
     <Target Name="CreateZip" AfterTargets="CreateModDir" Condition="'$(Configuration)' == 'Release'">

@@ -2,20 +2,22 @@
 Franky Mod Menu for SOTF
 
 # Todo
-- invisibility
-- Infinite Lung Capacity
-- Immune to fire
-- Infinite ammo
-- One hit cut trees
+??
 
 # Changelog
 
 
-# 0.8.4
+# 0.9.0
 Added
 - More weapons to damage multiplier, should have all weapons now. If not please let me know
 - Setting called "Save Settings on load", which if enabled will keep your last selected settings(On by default).
-- Unbreakable Armor option
+- Unbreakable Armor
+- Infinite Breath(for Lungs and Rebreather)
+- Instant Build
+- invisibility
+- Infinite ammo
+- Immune to fire damage
+- Category tabs in the settings menu for easier overview
 
 Fixed
 - Some weapons not being set in damage multiplier due to specific handling

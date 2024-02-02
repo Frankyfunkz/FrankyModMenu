@@ -10,7 +10,7 @@ Franky Mod Menu for SOTF
 # 0.9.0
 Added
 - More weapons to damage multiplier, should have all weapons now. If not please let me know
-- Setting called "Save Settings on load", which if enabled will keep your last selected settings(On by default).
+- "Save Settings" option(On by default). If enabled will keep your last selected settings, if disabled will always reset all values to default.
 - Unbreakable Armor
 - Infinite Breath(for Lungs and Rebreather)
 - Instant Build
@@ -22,9 +22,6 @@ Added
 Fixed
 - Some weapons not being set in damage multiplier due to specific handling
 - Changed handling of waiting for loading into world to check for cutscenes and suchs
-
-Misc
-- Prepared some code for when I hopefully soon will add an actual UI to this baby
 
 
 # Initial commit 0.8.0

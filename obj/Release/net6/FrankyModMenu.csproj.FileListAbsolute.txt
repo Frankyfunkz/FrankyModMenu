@@ -177,6 +177,3 @@ C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Release\net6\FrankyModMenu.d
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Release\net6\refint\FrankyModMenu.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Release\net6\FrankyModMenu.pdb
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Release\net6\ref\FrankyModMenu.dll
-C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\Sons.Construction.dll
-C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\Sons.Construction.Utils.dll
-C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\Sons.ConstructionBoltToken.dll

@@ -1,5 +1,6 @@
 ﻿using RedLoader;
 using RedLoader.Utils;
+using Sons.Ai.Vail;
 using SonsSdk;
 using SUI;
 using Sons.Environment;
@@ -13,6 +14,13 @@ using Sons.Wearable.Armour;
 using Sons.Wearable;
 using static Sons.Wearable.Armour.PlayerArmourSystem;
 using Sons.Items.Core;
+using TheForest;
+using SonsSdk.Attributes;
+using System.Runtime.CompilerServices;
+using Sons.Player;
+using Sons.Weapon;
+using Sons.Crafting.Structures;
+
 
 namespace FrankyModMenu
 {
@@ -77,6 +85,49 @@ namespace FrankyModMenu
             }
             LocalPlayer.Vitals.Rested.SetMin(0);
         }
+
+        public static void InfiniteBreath(bool onoff)
+        {
+            Config.InfiniteBreath.Value = onoff;
+            if (onoff)
+            {
+                LocalPlayer.FpCharacter._vitals.LungBreathing.CurrentLungAir = 99999;
+                LocalPlayer.FpCharacter._vitals.LungBreathing.MaxLungAirCapacity = 99999;
+                LocalPlayer.FpCharacter._vitals.LungBreathing.MaxRebreatherAirCapacity = 99999;
+                return;
+
+            }
+            LocalPlayer.FpCharacter._vitals.LungBreathing.CurrentLungAir = 20;
+            LocalPlayer.FpCharacter._vitals.LungBreathing.MaxLungAirCapacity = 20;
+            LocalPlayer.FpCharacter._vitals.LungBreathing.MaxRebreatherAirCapacity = 300;
+        }
+
+        public static void Invisibility(bool onoff)
+        {
+            Config.Invisibility.Value = onoff;
+            if (onoff)
+            {
+                //RLog.Msg(ConsoleColor.Green, "Invisible is true");
+                VailActorManager.SetGhostPlayer(true);
+
+                return;
+            }
+            //RLog.Msg(ConsoleColor.Red, "Invisible is false");
+            VailActorManager.SetGhostPlayer(false);
+
+        }
+
+        public static void InstantBuild(bool onoff)
+        {
+            Config.InstantBuild.Value = onoff;
+            if (onoff)
+            {
+                StructureCraftingSystem._instance.InstantBuild = true;
+                return;
+            }
+            StructureCraftingSystem._instance.InstantBuild = false;
+        }
+
         static float? fallDamage;
         public static void NoFallDamage(bool onoff)
         {
@@ -131,25 +182,25 @@ namespace FrankyModMenu
             var armorSystem = LocalPlayer.Transform.Find("PlayerAnimator/ArmourSystem").GetComponent<PlayerArmourSystem>();
             if (armorSystem != null)
             {
-                
                 {
                     for (int i = 0; i < armorSystem._armourSlotData.Count; i++)
                     {
-
                         var currentSlot = armorSystem._armourSlotData[i];
                         var currentArmourPieces = currentSlot.ArmourPiece;
 
                         if (currentArmourPieces != null)
                         {
-                                RLog.Msg($"Slot {i} Armour Pieces == {currentArmourPieces}");
-                                currentSlot.RemainingArmourpoints = unbreakableArmourPoints;
+                            //RLog.Msg($"Slot {i} Armour Pieces == {currentArmourPieces}");
+                            currentSlot.RemainingArmourpoints = unbreakableArmourPoints;
                         }
                         else
                         {
-                            RLog.Msg($"Slot {i} Armour Pieces == null");
+                            //RLog.Msg($"Slot {i} Armour Pieces == null");
                         }
-        }   }   }   }
-
+                    }
+                }
+            }
+        }
 
         private static Dictionary<int, ArmourValues> defaultArmourValues = new()
         {
@@ -178,15 +229,19 @@ namespace FrankyModMenu
                         if (defaultArmourValues.TryGetValue(itemId, out var defaultValues))
                         {
                             armorSlot.RemainingArmourpoints = defaultValues.DefaultArmour;
-                            RLog.Msg($"Restored default armor value for ItemId {itemId}");
+                            //RLog.Msg($"Restored default armor value for ItemId {itemId}");
                         }
                         else
                         {
-                            RLog.Msg($"Default values not found for ItemId {itemId}");
+                            //RLog.Msg($"Default values not found for ItemId {itemId}");
                         }
                     }
                     else
                     {
-                        RLog.Msg($"ArmourPiece not found for ItemId {itemId}");
+                        //RLog.Msg($"ArmourPiece not found for ItemId {itemId}");
                     }
-}   }   }   }   }
+                }
+            }
+        }
+    }
+}

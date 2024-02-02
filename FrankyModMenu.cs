@@ -11,6 +11,9 @@ using System.Collections;
 using Input = UnityEngine.Input;
 using Sons.Input;
 using Sons.Cutscenes;
+using HarmonyLib;
+using Sons.Weapon;
+using Sons.Gameplay;
 
 
 namespace FrankyModMenu;
@@ -24,6 +27,47 @@ public class FrankyModMenu : SonsMod
         OnUpdateCallback = OnUpdate;
         HarmonyPatchAll = true;
     }
+
+    [HarmonyPatch(typeof(RangedWeaponController), "OnAmmoSpent")]
+    public class AmmoPatches
+    {
+        [HarmonyPrefix]
+        public static bool PrefixOnAmmoSpent()
+        {
+            if (InfiniteAmmo())
+            { // Returning false here prevents the original method from executing
+                return false;
+            }
+            return true;
+        }
+
+        private static bool InfiniteAmmo()
+        {
+            return Config.InfiniteAmmo.Value;
+
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerStats), "HitFire")]
+    public class BurningPatch
+    {
+        [HarmonyPrefix]
+        public static bool PrefixBurning()
+        {
+            if (NoBurny())
+            { // Returning false here prevents the original method from executing
+                return false;
+            }
+            return true;
+        }
+
+        private static bool NoBurny()
+        {
+
+            return Config.NoBurny.Value;
+        }
+    }
+
     private bool hasJumpSoundPlayed = false;
     private bool isFalling = false;
     private bool AlternateJumpSound = false;
@@ -49,19 +93,9 @@ public class FrankyModMenu : SonsMod
 
     public void OnUpdate()
     {
-        /*
-        if (Input.GetKeyDown(Config.ToggleKey.Value))
-        {
-            //RLog.Msg("ToggleKey pressed");
-            FrankyModMenuToggle();
-        }
-        */
     }
     protected override void OnGameStart()
     {
-        _firstStart = false;
-        RLog.Msg("OnGameStart _firstStart set to false");
-
         if (CutsceneManager.GetActiveCutScene != null)
         {
             WaitForCutscene().RunCoro();
@@ -73,17 +107,6 @@ public class FrankyModMenu : SonsMod
             WaitForLocalPlayerFirst().RunCoro();
         }
     }
-    /*
-    protected override void OnSonsSceneInitialized(ESonsScene sonsScene)
-    {
-        if ((sonsScene == ESonsScene.Title) && (_firstStart == false))
-        {
-            RLog.Msg("_firstStart false and In Title screen, setting ReturnedToTitleScreen to true ");
-            CustomSettingsReg.ReturnedToTitleScreen = true;
-        }
-
-    }
-    */
     private void OnSettingsUiClosed()
     {
         Config.UpdateSettings();
@@ -103,7 +126,7 @@ public class FrankyModMenu : SonsMod
         //RLog.Msg("Waited for 5 seconds to make sure player has control");
         SettingsRegistry.CreateSettings(this, null, typeof(Config), callback: OnSettingsUiClosed);
         Config.UpdateOrRestoreDefaults();
-        
+
     }
 
     public IEnumerator WaitForLocalPlayer()
@@ -128,26 +151,7 @@ public class FrankyModMenu : SonsMod
         yield return new WaitUntil(new Func<bool>(IsNotInCutscene));
         //RLog.Msg("_activeCutscene is null. Continuing...");
     }
-    /*
-    private static bool IsMenuToggled = false;
-    public static void FrankyModMenuToggle()
-    {
-        if (!IsMenuToggled)
-        {
-            RLog.Msg("IsMenuOpen is false - Opening menu and unlocking mouse");
-            ModSettingsUi.Open("FrankyModMenu");
-            SonsTools.MenuMode(true);
-            IsMenuToggled = true;
-        }
-        else
-        {
-            RLog.Msg("IsMenuOpen is true - closing menu and locking mouse");
-            ModSettingsUi.Close();
-            SonsTools.MenuMode(false);
-            IsMenuToggled = false;
-        }
-    }
-    */
+
     public void OnWorldUpdate()
     {
         if (Config.IsInfiniteJumps.Value)
@@ -157,19 +161,14 @@ public class FrankyModMenu : SonsMod
                 // Check if the sound conditions are met
                 if (!hasJumpSoundPlayed && Config.IsMarioMode.Value)
                 {
-
                     string jumpSoundName = AlternateJumpSound ? "JumpSound2" : "JumpSound1";
-
                     // Play jump sound
                     SoundTools.PlaySound(jumpSoundName);
-
                     // Toggle bool for the next jump
                     AlternateJumpSound = !AlternateJumpSound;
-
                     // Set the flag to true so the sound won't be played again until the conditions change
                     hasJumpSoundPlayed = true;
                 }
-
                 // Execute Jump logic
                 LocalPlayer.FpCharacter.OnJumpInput(true);
                 LocalPlayer.FpCharacter.fallShakeBlock = true;
@@ -189,7 +188,6 @@ public class FrankyModMenu : SonsMod
                 {
                     // Set the flag to true to indicate falling has started
                     isFalling = true;
-
                     // Start playing the fall sound on a loop until the conditions change
                     PlayFallSoundLoop().RunCoro();
                 }
@@ -210,11 +208,9 @@ public class FrankyModMenu : SonsMod
             {
                 // Play the fall sound
                 SoundTools.PlaySound("FallSound");
-
                 // Wait for the full sound duration before playing it again
                 yield return new WaitForSeconds(soundDuration);
             }
-
             // Falling has stopped, reset the falling flag
             isFalling = false;
         }

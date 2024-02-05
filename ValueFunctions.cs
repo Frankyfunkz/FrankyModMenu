@@ -67,7 +67,7 @@ namespace FrankyModMenu
                 RLog.Error("Cannot change time multiplier when Stop Time is Enabled");
                 return;
             }
-            ///    RLog.Msg("SetTimeMultiplier called 1f x setvalue");
+            //RLog.Msg("SetTimeMultiplier called 1f x setvalue");
             TimeOfDayHolder.SetBaseTimeSpeed(1f * floatValue);
         }
         public static void DamageMultiplier(float value)
@@ -86,7 +86,7 @@ namespace FrankyModMenu
         {
             if (!LocalPlayer.IsInWorld)
             {
-                RLog.Msg("DamageMultiplier returned, player not in the world");
+                //RLog.Msg("DamageMultiplier returned, player not in the world");
                 return;
             }
 

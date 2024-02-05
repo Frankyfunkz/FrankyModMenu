@@ -100,17 +100,6 @@ public static class Config
 
     public static void UpdateSettings()
     {
-        if (!LocalPlayer.IsInWorld)
-        {
-            SonsTools.ShowMessageBox("Oops", "Cant change settings for FrankyModMenu while not ingame");
-            //SonsTools.ShowMessage("Cant change settings for FrankyModMenu while not In-Game", 3f);
-            RLog.Error("Cant change settings for FrankyModMenu while not In-Game");
-            return;
-        }
-        if (CutsceneManager.GetActiveCutScene != null)
-        {
-            FrankyModMenu.WaitForCutscene().RunCoro();
-        }
         ToggleFunctions.GodMode(GodMode.Value);
         ToggleFunctions.UnbreakableArmour(UnBreakableArmor.Value);
         ToggleFunctions.InfStamina(IsInfStamina.Value);

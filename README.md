@@ -2,11 +2,14 @@
 Franky Mod Menu for SOTF
 
 # Todo
-??
+I'm open for suggestions
 
 # Changelog
 
-
+# 0.9.1 Hotfix
+Fixed
+- Getting an unclosable popup when loading into dedicated servers. I recombobulated all the logic.
+  
 # 0.9.0
 Added
 - More weapons to damage multiplier, should have all weapons now. If not please let me know

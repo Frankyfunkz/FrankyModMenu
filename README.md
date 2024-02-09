@@ -4,6 +4,9 @@ Franky Mod Menu for SOTF
 # Todo
 I'm open for suggestions
 
+# In Progress
+- Infinite fuel for fires
+
 # Changelog
 
 # 0.9.1 Hotfix

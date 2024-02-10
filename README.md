@@ -6,7 +6,6 @@ I'm open for suggestions
 
 # In Progress
 - Infinite fuel for fires
-- Infinite Battery
 
 # Changelog
 

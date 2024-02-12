@@ -12,6 +12,7 @@ I'm open for suggestions
 # 0.9.2
 Added
 - Infinite fires
+
 Fixed
 - Unbreakable armor eventually breaking, now reapplies every 60 seconds.
 

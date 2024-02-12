@@ -32,6 +32,7 @@ public static class Config
     public static ConfigEntry<string> DamageMultiplier { get; private set; }
 
     public static ConfigEntry<bool> InstantBuild { get; private set; }
+    public static ConfigEntry<bool> InfiFire { get; private set; }
     public static ConfigEntry<bool> StopTime { get; private set; }
     public static ConfigEntry<string> TimeMultiplier { get; private set; }
 
@@ -44,14 +45,14 @@ public static class Config
     public static ConfigEntry<bool> IsMarioMode { get; private set; }
 
     public static Dictionary<string, float> multiplierdict = new()
-        {
-            { "0", 0f }, { "0.5", 0.5f }, { "1", 1f }, { "1.5", 1.5f }, { "2", 2f }, { "2.5", 2.5f },
-            { "3", 3f }, { "3.5", 3.5f }, { "4", 4f }, { "4.5", 4.5f }, { "5", 5f }, { "5.5", 5.5f },
-            { "6", 6f }, { "6.5", 6.5f }, { "7", 7f }, { "7.5", 7.5f }, { "8", 8f }, { "8.5", 8.5f },
-            { "9", 9f }, { "9.5", 9.5f }, { "10", 10f }, { "15", 15f }, { "20", 20f }, { "30", 30f },
-            { "40", 40f }, { "50", 50f }, { "75", 75f }, { "100", 100f }, { "200", 200f },
-            { "300", 300f }, { "400", 400f }, { "500", 500f }
-        };
+    {
+        { "0", 0f }, { "0.5", 0.5f }, { "1", 1f }, { "1.5", 1.5f }, { "2", 2f }, { "2.5", 2.5f },
+        { "3", 3f }, { "3.5", 3.5f }, { "4", 4f }, { "4.5", 4.5f }, { "5", 5f }, { "5.5", 5.5f },
+        { "6", 6f }, { "6.5", 6.5f }, { "7", 7f }, { "7.5", 7.5f }, { "8", 8f }, { "8.5", 8.5f },
+        { "9", 9f }, { "9.5", 9.5f }, { "10", 10f }, { "15", 15f }, { "20", 20f }, { "30", 30f },
+        { "40", 40f }, { "50", 50f }, { "75", 75f }, { "100", 100f }, { "200", 200f },
+        { "300", 300f }, { "400", 400f }, { "500", 500f }
+    };
 
     public static void Init()
     {
@@ -83,6 +84,7 @@ public static class Config
         DamageMultiplier = Player.CreateEntry("MultiplierMenu", defaultMultiplierKey, "Damage Multiplier", "Might have to be reapplied after you obtain a new weapon", false);
         DamageMultiplier.SetOptions(multiplierdict.Keys.ToArray());
         InstantBuild = Game.CreateEntry("InstantBuild", false, "Instant Build", "Instantly build any Blueprint you put down", false);
+        InfiFire = Game.CreateEntry("InfiFire", false, "Infinite Fires", "", false);
         StopTime = Game.CreateEntry("StopTime", false, "Stop Time", "", false);
         TimeMultiplier = Game.CreateEntry("TimeMultiplier", defaultMultiplierKey, "Time Speed Multiplier", "Will not work if Stop Time is enabled", false);
         TimeMultiplier.SetOptions(multiplierdict.Keys.ToArray());
@@ -113,6 +115,7 @@ public static class Config
         ToggleFunctions.InfiniteBreath(InfiniteBreath.Value);
         ToggleFunctions.Invisibility(Invisibility.Value);
         ToggleFunctions.InstantBuild(InstantBuild.Value);
+        ToggleFunctions.SetInfiFires(InfiFire.Value);
         ValueFunctions.WalkSpeed(WalkSpeed.Value);
         ValueFunctions.RunSpeed(RunSpeed.Value);
         ValueFunctions.SwimSpeed(SwimSpeed.Value);
@@ -165,5 +168,9 @@ public static class Config
         Invisibility.Value = Invisibility.DefaultValue;
         NoBurny.Value = NoBurny.DefaultValue;
         InstantBuild.Value = InstantBuild.DefaultValue;
+        InfiniteAmmo.Value = InfiniteAmmo.DefaultValue;
+        NoBurny.Value = NoBurny.DefaultValue;
+        InfiFire.Value = InfiFire.DefaultValue;
+
     }
 }

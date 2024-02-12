@@ -19,7 +19,13 @@ using SonsSdk.Attributes;
 using System.Runtime.CompilerServices;
 using Sons.Player;
 using Sons.Weapon;
+using System.Reflection;
 using Sons.Crafting.Structures;
+using Construction;
+using static FrankyModMenu.ValueFunctions;
+using Endnight.Utilities;
+using Sons.Gameplay;
+using Sons.Cutscenes;
 
 
 namespace FrankyModMenu
@@ -102,6 +108,65 @@ namespace FrankyModMenu
             LocalPlayer.FpCharacter._vitals.LungBreathing.MaxRebreatherAirCapacity = 300;
         }
 
+        public static void SetInfiFires(bool onoff)
+        {
+            Config.InfiFire.Value = onoff;
+            // Iterate over each Fire object
+            for (int i = 1; ; i++)
+            {
+                GameObject parentGameObject = GameObject.Find("Fire" + i + "/FireElement(Clone)/CookingSystem");
+                if (parentGameObject == null)
+                {
+                    // If no more Fire objects are found, exit the loop
+                    break;
+                }
+
+                
+                CookingFireNew cookingFire = parentGameObject?.GetComponent<CookingFireNew>(); 
+                // Apply logic if CookingFireNew component is found
+                if (cookingFire != null)
+                {
+                    // Apply logic based on the configuration setting
+                    if (onoff)
+                    {
+                        //RLog.Msg("InfiFire value true, checking islit");
+                        if (!cookingFire.IsLit)
+                        {
+                            // Set the fire alight and adjust fuel amount and drain rate
+                            //RLog.Msg("Fire not lit, setting alight, setting maxfuel and fuel 99999 and low drainrate");
+                            cookingFire.SetAlight();
+                            cookingFire._fuel._fuelMax = 999999f;
+                            cookingFire._fuel.Amount = 999999f;
+                            cookingFire._saveData.FuelDrainRate = 1E-05f;
+                        }
+                        else
+                        {
+
+                            // Adjust fuel amount and drain rate
+                            //RLog.Msg("Fire already lit, setting maxfuel and fuel 99999 and low drainrate");
+                            cookingFire._fuel._fuelMax = 999999f;
+                            cookingFire._fuel.Amount = 999999f;
+                            cookingFire._saveData.FuelDrainRate = 1E-05f;
+                        }
+
+                    }
+                    else
+                    {
+                        // Restore default values
+                        //RLog.Msg("InfiFire value false, restoring defaults");
+                        cookingFire._fuel._fuelMax = 1260f;
+                        cookingFire._fuel.Amount = 1260f;
+                        cookingFire._saveData.FuelDrainRate = 0.25f;
+                    }
+                }
+                else
+                {
+                    // Handle case where CookingFireNew component is not found
+                    //RLog.Msg("CookingFireNew component not found on Fire" + i + ".");
+                }
+            }
+        }
+
         public static void Invisibility(bool onoff)
         {
             Config.Invisibility.Value = onoff;
@@ -169,11 +234,55 @@ namespace FrankyModMenu
             if (onoff)
             {
                 SetUnbreakableArmour();
+                CheckArmourValues().RunCoro();
                 return;
             }
             RestoreDefaultArmorValues();
         }
 
+        private static bool NeedsArmourRefresh(PlayerArmourSystem armorSystem)
+        {
+            if (armorSystem != null)
+            {
+                foreach (var armorSlot in armorSystem._armourSlotData)
+                {
+                    if (armorSlot.RemainingArmourpoints <= 10000)
+                    {
+                        //RLog.Msg("Found armor piece with <= 10000 armor");
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        public static IEnumerator CheckArmourValues()
+        {
+
+            var armorSystem = LocalPlayer.Transform.Find("PlayerAnimator/ArmourSystem").GetComponent<PlayerArmourSystem>();
+
+            while (true)
+            {
+                if (!Config.UnBreakableArmor.Value)
+                {
+                    // Stop the coroutine if unbreakable armour is turned off
+                    // RLog.Msg("UnbreakableArmour is off, stopping coro");
+                    yield break;
+                }
+
+                // Check remaining armour points and perform actions as needed
+                if (NeedsArmourRefresh(armorSystem))
+                {
+                    // RLog.Msg("Enum - Setting pieces to unbreakableArmourPoints");
+                    SetUnbreakableArmour();
+                }
+
+                // Wait for 60 seconds before checking again
+                yield return new WaitForSeconds(60f);
+                // RLog.Msg("Waited 60 seconds");
+            }
+        }
+  
         public static void SetUnbreakableArmour()
         {
 

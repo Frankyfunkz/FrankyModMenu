@@ -14,6 +14,7 @@ using Sons.Cutscenes;
 using HarmonyLib;
 using Sons.Weapon;
 using Sons.Gameplay;
+using Construction;
 
 
 namespace FrankyModMenu;
@@ -182,8 +183,6 @@ public class FrankyModMenu : SonsMod
 
         }
     }
-
-
 
     public static IEnumerator WaitForCutscene()
     {

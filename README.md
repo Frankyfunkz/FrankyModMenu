@@ -5,9 +5,16 @@ Franky Mod Menu for SOTF
 I'm open for suggestions
 
 # In Progress
-- Infinite fuel for fires
+
 
 # Changelog
+
+# 0.9.2
+Added
+- Infinite fires
+Fixed
+- Unbreakable armor eventually breaking, now reapplies every 60 seconds.
+
 
 # 0.9.1 Hotfix
 Fixed

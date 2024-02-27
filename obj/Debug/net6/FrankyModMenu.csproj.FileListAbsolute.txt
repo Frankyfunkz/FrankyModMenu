@@ -51,7 +51,6 @@ C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\AsmResolver.DotNe
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\AsmResolver.PE.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\AsmResolver.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\MonoMod.dll
-C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\Il2CppInterop.HarmonySupport.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\Microsoft.Diagnostics.Runtime.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\bHapticsLib.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\AsmResolver.PE.File.dll
@@ -166,7 +165,6 @@ C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\Il2CppInterop.Run
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\RedLoader.xml
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\SonsGameManager.pdb
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\SonsSdk.xml
-C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\Il2CppInterop.HarmonySupport.xml
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Debug\net6\FrankyModMenu.csproj.AssemblyReference.cache
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Debug\net6\FrankyModMenu.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Debug\net6\FrankyModMenu.AssemblyInfoInputs.cache
@@ -180,3 +178,5 @@ C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\obj\Debug\net6\ref\FrankyModMenu
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\Sons.Construction.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\Sons.Construction.Utils.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\Sons.ConstructionBoltToken.dll
+C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\com.alteregogames.aeg-fsr.Runtime.HDRP.dll
+C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Debug\net6\com.alteregogames.aeg-fsr.Runtime.dll

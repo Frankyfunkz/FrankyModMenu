@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/ToniMacaroni/RedLoader/main/MetadataSchema.json",
   "id": "FrankyModMenu",
   "author": "Franky",
-  "version": "0.9.1",
+  "version": "0.9.4",
   "description": "A bunch of QOL and Cheat options.",
   "gameVersion": "1.0.0",
   "type": "Mod",

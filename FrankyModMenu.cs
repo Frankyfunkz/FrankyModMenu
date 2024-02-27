@@ -27,7 +27,6 @@ public class FrankyModMenu : SonsMod
     public static event CutsceneCallback OnCutsceneComplete;
     public FrankyModMenu()
     {
-
         OnCutsceneComplete += HandleCutsceneComplete;
         OnWorldUpdatedCallback = OnWorldUpdate;
         HarmonyPatchAll = true;
@@ -99,6 +98,7 @@ public class FrankyModMenu : SonsMod
     {
         _firstStart = false;
         _returnedToTitle = false;
+        
         if (CutsceneManager.GetActiveCutScene != null)
         {
             //RLog.Msg("OnGameStart in Cutscene, doing WaitForCutscene coro");
@@ -109,6 +109,7 @@ public class FrankyModMenu : SonsMod
             //RLog.Msg("OnGameStart, Not in Cutscene, doing only waitforplayer coro");
             WaitForLocalPlayerFirst().RunCoro();
         }
+        
     }
 
     protected override void OnSonsSceneInitialized(ESonsScene sonsScene)
@@ -117,7 +118,7 @@ public class FrankyModMenu : SonsMod
         {
             if (!_firstStart)
             {
-                _hasControl = false;
+                //_hasControl = false;
                 _returnedToTitle = true;
                 //RLog.Msg("In Title Screen, not first start, set hascontrol false, set _returnedToTitle " + _returnedToTitle);
                 return;
@@ -128,13 +129,13 @@ public class FrankyModMenu : SonsMod
             }
         }
     }
-
+        
     private void HandleCutsceneComplete()
     {
         //RLog.Msg("HandleCutscene, waitforcutscene coro Complete, doing waitforlocalplayerfirst coro ");
         WaitForLocalPlayerFirst().RunCoro();
     }
-
+    
     private void OnSettingsUiClosed()
     {
         if (!LocalPlayer._instance && _returnedToTitle)
@@ -146,6 +147,7 @@ public class FrankyModMenu : SonsMod
         }
         Config.UpdateSettings();
     }
+        
     IEnumerator WaitForLocalPlayerFirst()
     {
 
@@ -155,7 +157,7 @@ public class FrankyModMenu : SonsMod
             return LocalPlayer._instance != null;
         }
         //Wait until LocalPlayer._instance is not null
-        yield return new WaitUntil(new Func<bool>(PlayerExists));
+        yield return CustomWaitUntil.WaitUntil(new Func<bool>(PlayerExists));
         //RLog.Msg("LocalPlayer._instance is not null. Continuing...");
 
 
@@ -167,7 +169,7 @@ public class FrankyModMenu : SonsMod
                 return LocalPlayer.FpCharacter._terrainOrFlatContact == true;
             }
             //Wait until player has control
-            yield return new WaitUntil(new Func<bool>(PlayerHasControl));
+            yield return CustomWaitUntil.WaitUntil(new Func<bool>(PlayerHasControl));
             _hasControl = true;
             //RLog.Msg("terrainOrflatcontact true, set _hasControl to " + _hasControl);
             SettingsRegistry.CreateSettings(this, null, typeof(Config), callback: OnSettingsUiClosed);
@@ -184,6 +186,7 @@ public class FrankyModMenu : SonsMod
         }
     }
 
+    
     public static IEnumerator WaitForCutscene()
     {
         static bool IsNotInCutscene()
@@ -191,11 +194,11 @@ public class FrankyModMenu : SonsMod
             //RLog.Msg("Checking if player is in cutscene");
             return CutsceneManager._instance._activeCutscene == null;
         }
-        yield return new WaitUntil(new Func<bool>(IsNotInCutscene));
+        yield return CustomWaitUntil.WaitUntil(new Func<bool>(IsNotInCutscene));
         //RLog.Msg("_activeCutscene is null. Continuing...");
         OnCutsceneComplete?.Invoke();
     }
-
+    
     public void OnWorldUpdate()
     {
         if (Config.IsInfiniteJumps.Value)

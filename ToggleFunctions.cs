@@ -26,6 +26,9 @@ using static FrankyModMenu.ValueFunctions;
 using Endnight.Utilities;
 using Sons.Gameplay;
 using Sons.Cutscenes;
+using Sons.Items;
+using Sons.Inventory;
+using Sons.Gameplay.GameSetup;
 
 
 namespace FrankyModMenu
@@ -41,11 +44,11 @@ namespace FrankyModMenu
             Config.GodMode.Value = onoff;
             if (onoff)
             {
-                Sons.Settings.Cheats.GodMode = true;
+                Sons.Settings.Cheats.Setup.GodMode = true;
                 return;
 
             }
-            Sons.Settings.Cheats.GodMode = false;
+            Sons.Settings.Cheats.Setup.GodMode = false;
         }
 
         public static void InfStamina(bool onoff)
@@ -53,10 +56,10 @@ namespace FrankyModMenu
             Config.IsInfStamina.Value = onoff;
             if (onoff)
             {
-                Sons.Settings.Cheats.InfiniteEnergy = true;
+                Sons.Settings.Cheats.Setup.InfiniteEnergy = true;
                 return;
             }
-            Sons.Settings.Cheats.InfiniteEnergy = false;
+            Sons.Settings.Cheats.Setup.InfiniteEnergy = false;
         }
 
         public static void NoHungry(bool onoff)
@@ -86,6 +89,7 @@ namespace FrankyModMenu
             Config.IsNoSleep.Value = onoff;
             if (onoff)
             {
+                                
                 LocalPlayer.Vitals.Rested.SetMin(100);
                 return;
             }
@@ -114,15 +118,16 @@ namespace FrankyModMenu
             // Iterate over each Fire object
             for (int i = 1; ; i++)
             {
-                GameObject parentGameObject = GameObject.Find("Fire" + i + "/FireElement(Clone)/CookingSystem");
-                if (parentGameObject == null)
+                GameObject parentGameObjectFire = GameObject.Find("Fire" + i + "/FireElement(Clone)/CookingSystem");
+                GameObject parentGameObjectBonFire = GameObject.Find("Fire" + i + "/BonFireElement(Clone)");
+                if (parentGameObjectFire == null && parentGameObjectBonFire == null)
                 {
                     // If no more Fire objects are found, exit the loop
                     break;
                 }
 
                 
-                CookingFireNew cookingFire = parentGameObject?.GetComponent<CookingFireNew>(); 
+                CookingFireNew cookingFire = parentGameObjectFire?.GetComponent<CookingFireNew>();
                 // Apply logic if CookingFireNew component is found
                 if (cookingFire != null)
                 {
@@ -163,6 +168,48 @@ namespace FrankyModMenu
                 {
                     // Handle case where CookingFireNew component is not found
                     //RLog.Msg("CookingFireNew component not found on Fire" + i + ".");
+                }
+
+                CookingFireNew cookingBonFire = parentGameObjectBonFire?.GetComponent<CookingFireNew>();
+                if (cookingBonFire != null)
+                {
+                    // Apply logic based on the configuration setting
+                    if (onoff)
+                    {
+                        //RLog.Msg("InfiFire value true, checking islit");
+                        if (!cookingBonFire.IsLit)
+                        {
+                            // Set the fire alight and adjust fuel amount and drain rate
+                            //RLog.Msg("Fire not lit, setting alight, setting maxfuel and fuel 99999 and low drainrate");
+                            cookingBonFire.SetAlight();
+                            cookingBonFire._fuel._fuelMax = 999999f;
+                            cookingBonFire._fuel.Amount = 999999f;
+                            cookingBonFire._saveData.FuelDrainRate = 1E-05f;
+                        }
+                        else
+                        {
+
+                            // Adjust fuel amount and drain rate
+                            //RLog.Msg("Fire already lit, setting maxfuel and fuel 99999 and low drainrate");
+                            cookingBonFire._fuel._fuelMax = 999999f;
+                            cookingBonFire._fuel.Amount = 999999f;
+                            cookingBonFire._saveData.FuelDrainRate = 1E-05f;
+                        }
+
+                    }
+                    else
+                    {
+                        // Restore default values
+                        //RLog.Msg("InfiFire value false, restoring defaults");
+                        cookingBonFire._fuel._fuelMax = 1260f;
+                        cookingBonFire._fuel.Amount = 1260f;
+                        cookingBonFire._saveData.FuelDrainRate = 0.25f;
+                    }
+                }
+                else
+                {
+                    // Handle case where cookingBonFireNew component is not found
+                    //RLog.Msg("cookingBonFireNew component not found on Fire" + i + ".");
                 }
             }
         }
@@ -228,6 +275,93 @@ namespace FrankyModMenu
             Config.IsMarioMode.Value = onoff;
         }
 
+        public static void CreativeMode(bool onoff)
+        {
+            //Sons.Gameplay.GameSetup.CreativeModeUiEnabler creativeModeUiEnabler = new Sons.Gameplay.GameSetup.CreativeModeUiEnabler();
+            //Sons.Gameplay.GameSetup.GameSetupManager.ApplyCreativeGameModeSettings()
+            //Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
+            Config.CreativeMode.Value = onoff;
+            if(onoff)
+            {
+                Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
+                return;
+            }
+            Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(false);
+        }
+
+        public static void InfiniteArtifact(bool onoff)
+        {
+            Config.InfiniteArtifact.Value = onoff;
+            if(onoff)
+            {
+                SetInfiArtifact();
+                return;
+            }
+            RestoreInfiArtifact();
+        }
+
+        public static void SetInfiArtifact()
+        {
+            GameObject artiObject = GameObject.Find("ArtifactHeld");
+            ArtifactItemController artiObjItemCont = artiObject.GetComponent<ArtifactItemController>();
+            
+            if (artiObject != null)
+            {
+                //RLog.Msg("SetInfiArti - artiObject isnt null");
+                if (artiObjItemCont != null)
+                {
+                    //RLog.Msg("SetInfiArti - ArtiObjectItemController isnt null, setting max and current to 999999");
+                    artiObjItemCont._fuel.MaxVolume = 999999;
+                    artiObjItemCont._fuel.CurrentVolume = 999999;
+                }
+                else
+                {
+                    //RLog.Msg("SetInfiArti - artiObjectItemControll not found");
+                    return;
+                }
+            }
+            else
+            {
+                //RLog.Msg("SetInfiArti - ArtifactHeld not found");
+                return; 
+            }
+            
+        }
+
+        public static void RestoreInfiArtifact()
+        {
+            /*
+            VolumeContainerItemInstanceModule VolData;
+            if (VolData.ItemId == 707)
+            {
+
+            }
+            //var artiItem = ItemDatabaseManager.ItemById(707);
+            */
+            GameObject artiObject = GameObject.Find("ArtifactHeld");
+            ArtifactItemController artiObjItemCont = artiObject.GetComponent<ArtifactItemController>();
+
+            if (artiObject != null)
+            {
+                //RLog.Msg("RestoreInfiArti - artiObject isnt null");
+                if (artiObjItemCont != null)
+                {
+                    //RLog.Msg("RestoreInfiArti - ArtiObjectItemController isnt null, setting max and current to 600");
+                    artiObjItemCont._fuel.MaxVolume = 600;
+                    artiObjItemCont._fuel.CurrentVolume = 600;
+                }
+                else
+                {
+                    //RLog.Msg("RestoreInfiArti - artiObjectItemControll not found");
+                    return;
+                }
+            }
+            else
+            {
+                //RLog.Msg("RestoreInfiArti - ArtifactHeld not found");
+                return;
+            }
+        }
         public static void UnbreakableArmour(bool onoff)
         {
             Config.UnBreakableArmor.Value = onoff;

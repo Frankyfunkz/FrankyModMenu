@@ -4,11 +4,16 @@ using SonsSdk;
 using TheForest.Utils;
 using SonsGameManager;
 using Sons.Cutscenes;
+using UnityEngine;
+using SonsSdk.Attributes;
+using TMPro;
 
 namespace FrankyModMenu;
 
 public static class Config
 {
+    public static bool _hasBeenSet = false;
+
     public static ConfigCategory Category { get; private set; }
     public static ConfigCategory Player { get; private set; }
     public static ConfigCategory Game { get; private set; }
@@ -29,8 +34,11 @@ public static class Config
     public static ConfigEntry<bool> NoBurny { get; private set; }
     public static ConfigEntry<bool> Invisibility { get; private set; }
     public static ConfigEntry<bool> InfiniteAmmo { get; private set; }
+    [SettingsUiHeader("Note: Artifact needs to be equipped to toggle Infinite Artifact On/Off", TextAlignmentOptions.MidlineLeft, true)]
+    public static ConfigEntry<bool> InfiniteArtifact { get; private set; }
     public static ConfigEntry<string> DamageMultiplier { get; private set; }
 
+    public static ConfigEntry<bool> CreativeMode { get; private set; }
     public static ConfigEntry<bool> InstantBuild { get; private set; }
     public static ConfigEntry<bool> InfiFire { get; private set; }
     public static ConfigEntry<bool> StopTime { get; private set; }
@@ -43,6 +51,7 @@ public static class Config
     public static ConfigEntry<bool> IsInfiniteJumps { get; private set; }
 
     public static ConfigEntry<bool> IsMarioMode { get; private set; }
+    
 
     public static Dictionary<string, float> multiplierdict = new()
     {
@@ -81,8 +90,10 @@ public static class Config
         NoBurny = Player.CreateEntry("NoBurny", false, "No Fire Damage", "You will still see the burning FX", false);
         Invisibility = Player.CreateEntry("Invisibility", false, "Invisible", "If Enabled Ai wont notice you", false);
         InfiniteAmmo = Player.CreateEntry("InfiniteAmmo", false, "Infinite Ammo", "Does not work for regular bows", false);
+        InfiniteArtifact = Player.CreateEntry("InfiniteArtifact", false, "Infinite Artifact", "Sets the power level to 999999, simulating infinite use. Re-enable if it runs out", false);
         DamageMultiplier = Player.CreateEntry("MultiplierMenu", defaultMultiplierKey, "Damage Multiplier", "Might have to be reapplied after you obtain a new weapon", false);
         DamageMultiplier.SetOptions(multiplierdict.Keys.ToArray());
+        CreativeMode = Game.CreateEntry("CreativeMode", false, "CreativeMode", "Enable/Disable toggling creative mode UI", false);
         InstantBuild = Game.CreateEntry("InstantBuild", false, "Instant Build", "Instantly build any Blueprint you put down", false);
         InfiFire = Game.CreateEntry("InfiFire", false, "Infinite Fires", "", false);
         StopTime = Game.CreateEntry("StopTime", false, "Stop Time", "", false);
@@ -116,6 +127,38 @@ public static class Config
         ToggleFunctions.Invisibility(Invisibility.Value);
         ToggleFunctions.InstantBuild(InstantBuild.Value);
         ToggleFunctions.SetInfiFires(InfiFire.Value);
+        ToggleFunctions.CreativeMode(CreativeMode.Value);
+
+        GameObject artifactHeldObject = GameObject.Find("LocalPlayer/PlayerAnimator/Root/Hips/Spine/Spine1/Spine2/RightShoulder/RightArm/RightForeArm/RightForeArmTwistNew1/RightForeArmTwistNew2/RightForeArmTwistNew3/RightHand/RightHandWeapon/rightHandHeld/NEWITEMS/ArtifactHeld");
+        if (InfiniteArtifact.Value == true)
+        {
+            
+            if (artifactHeldObject != null && _hasBeenSet == false)
+            {
+                _hasBeenSet = true;
+                ToggleFunctions.InfiniteArtifact(InfiniteArtifact.Value);
+            }
+            else if (artifactHeldObject != null && _hasBeenSet == true)
+            {
+                
+            }
+            else if (artifactHeldObject == null && _hasBeenSet == false) 
+            {
+                InfiniteArtifact.Value = InfiniteArtifact.DefaultValue;
+                RLog.Msg("Artifact needs to be equipped to toggle InfiniteArtifact.");
+            }
+        }
+        else
+        {
+            if (artifactHeldObject != null)
+            {
+                ToggleFunctions.InfiniteArtifact(InfiniteArtifact.Value);
+            }
+            else
+            {
+                //RLog.Msg("Artifact needs to be equipped to toggle InfiniteArtifact.");
+            }
+        }
         ValueFunctions.WalkSpeed(WalkSpeed.Value);
         ValueFunctions.RunSpeed(RunSpeed.Value);
         ValueFunctions.SwimSpeed(SwimSpeed.Value);
@@ -144,6 +187,7 @@ public static class Config
         if (Config.ShouldSaveSettings.Value == true)
         {
             //RLog.Msg("RestoreDefaults, ShouldSaveSettings is true, apply stored settings");
+            InfiniteArtifact.Value = InfiniteArtifact.DefaultValue;
             UpdateSettings();
             return;
         }
@@ -171,6 +215,7 @@ public static class Config
         InfiniteAmmo.Value = InfiniteAmmo.DefaultValue;
         NoBurny.Value = NoBurny.DefaultValue;
         InfiFire.Value = InfiFire.DefaultValue;
-
+        InfiniteArtifact.Value = InfiniteArtifact.DefaultValue;
+        CreativeMode.Value = CreativeMode.DefaultValue;
     }
 }

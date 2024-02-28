@@ -1,47 +1,11 @@
-# FrankyModMenu
-Franky Mod Menu for SOTF
-
 # Todo
+
 I'm open for suggestions
 
-# In Progress
-
-
 # Changelog
-
-# 0.9.6
-Added
-- Infinite Build Items (Works great with creative mode option to get your building mats)
-- One Hit Cut Trees
-
-# 0.9.5
-Fixed
-- Hotfix for bonfire not being infinite
-
-# 0.9.4
-Added
-- InfiniteArtifact ( Required to equip artifact on toggling )
-- CreativeMode ( Enables the inventory Toggle Mode option for free materials )
-
-Updated
-- InfiniteFire to include bonfires
-
-Fixed
-- Things that were initially broken by the 1.0 update.
-Now you will be able to run the mod on first start and dedicated servers again
-Though not everything might work on dedicated servers due too their limits of having no player host
-
-# 0.9.3
-- Temporary fix for 1.0 release
-
 # 0.9.2
 Added
-- Infinite fires
-
-Fixed
-- Unbreakable armor eventually breaking, now reapplies every 60 seconds.
-
-
+InfiniteFuel
 # 0.9.1 Hotfix
 Fixed
 - Getting an unclosable popup when loading into dedicated servers. I recombobulated all the logic.
@@ -80,3 +44,17 @@ Added
 * Damage Multiplier (For regular arrows, Guns, and melee weapons)
 * Time Speed Multiplier
 * Mario Mode (fun mode for Infinite Jumps)
+
+
+---
+### Cooking Buffs
+___
+Select a Toggle key which when used toggles on/off the selected cooking buff and applies the buff selected in the mod settings.
+The duration is also adjustable.
+___
+The duration is in ingame seconds.
+So it depends on your day length for how long it takes in real time to run out.
+
+Duration values are from default minimum 14400 
+(*4 ingame hours*) Which is the default duration a cooking buff lasts.
+With a maximum of 10 ingame days.

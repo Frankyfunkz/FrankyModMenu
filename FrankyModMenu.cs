@@ -23,7 +23,7 @@ public class FrankyModMenu : SonsMod
 {
     public delegate void CutsceneCallback();
 
-  
+
     public static event CutsceneCallback OnCutsceneComplete;
     public FrankyModMenu()
     {
@@ -98,7 +98,7 @@ public class FrankyModMenu : SonsMod
     {
         _firstStart = false;
         _returnedToTitle = false;
-        
+
         if (CutsceneManager.GetActiveCutScene != null)
         {
             //RLog.Msg("OnGameStart in Cutscene, doing WaitForCutscene coro");
@@ -109,7 +109,7 @@ public class FrankyModMenu : SonsMod
             //RLog.Msg("OnGameStart, Not in Cutscene, doing only waitforplayer coro");
             WaitForLocalPlayerFirst().RunCoro();
         }
-        
+
     }
 
     protected override void OnSonsSceneInitialized(ESonsScene sonsScene)
@@ -129,13 +129,13 @@ public class FrankyModMenu : SonsMod
             }
         }
     }
-        
+
     private void HandleCutsceneComplete()
     {
         //RLog.Msg("HandleCutscene, waitforcutscene coro Complete, doing waitforlocalplayerfirst coro ");
         WaitForLocalPlayerFirst().RunCoro();
     }
-    
+
     private void OnSettingsUiClosed()
     {
         if (!LocalPlayer._instance && _returnedToTitle)
@@ -147,7 +147,7 @@ public class FrankyModMenu : SonsMod
         }
         Config.UpdateSettings();
     }
-        
+
     IEnumerator WaitForLocalPlayerFirst()
     {
 
@@ -186,7 +186,7 @@ public class FrankyModMenu : SonsMod
         }
     }
 
-    
+
     public static IEnumerator WaitForCutscene()
     {
         static bool IsNotInCutscene()
@@ -198,7 +198,7 @@ public class FrankyModMenu : SonsMod
         //RLog.Msg("_activeCutscene is null. Continuing...");
         OnCutsceneComplete?.Invoke();
     }
-    
+
     public void OnWorldUpdate()
     {
         if (Config.IsInfiniteJumps.Value)

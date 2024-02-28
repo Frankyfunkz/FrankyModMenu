@@ -39,7 +39,9 @@ public static class Config
     public static ConfigEntry<string> DamageMultiplier { get; private set; }
 
     public static ConfigEntry<bool> CreativeMode { get; private set; }
+    public static ConfigEntry<bool> InfiniteBuildItems { get; private set; }
     public static ConfigEntry<bool> InstantBuild { get; private set; }
+    public static ConfigEntry<bool> OneHitCutTrees { get; private set; }
     public static ConfigEntry<bool> InfiFire { get; private set; }
     public static ConfigEntry<bool> StopTime { get; private set; }
     public static ConfigEntry<string> TimeMultiplier { get; private set; }
@@ -51,7 +53,7 @@ public static class Config
     public static ConfigEntry<bool> IsInfiniteJumps { get; private set; }
 
     public static ConfigEntry<bool> IsMarioMode { get; private set; }
-    
+
 
     public static Dictionary<string, float> multiplierdict = new()
     {
@@ -93,8 +95,10 @@ public static class Config
         InfiniteArtifact = Player.CreateEntry("InfiniteArtifact", false, "Infinite Artifact", "Sets the power level to 999999, simulating infinite use. Re-enable if it runs out", false);
         DamageMultiplier = Player.CreateEntry("MultiplierMenu", defaultMultiplierKey, "Damage Multiplier", "Might have to be reapplied after you obtain a new weapon", false);
         DamageMultiplier.SetOptions(multiplierdict.Keys.ToArray());
-        CreativeMode = Game.CreateEntry("CreativeMode", false, "CreativeMode", "Enable/Disable toggling creative mode UI", false);
-        InstantBuild = Game.CreateEntry("InstantBuild", false, "Instant Build", "Instantly build any Blueprint you put down", false);
+        CreativeMode = Game.CreateEntry("CreativeMode", false, "CreativeMode", "Enable/Disable creative mode inventory option for build items", false);
+        InfiniteBuildItems = Game.CreateEntry("InfiniteBuildItems", false, "Infinite Build Items", "Unlimited items for building, works great with Creative Mode", false);
+        InstantBuild = Game.CreateEntry("InstantBuild", false, "Instant Blueprint Build", "Instantly build any Blueprint you put down", false);
+        OneHitCutTrees = Game.CreateEntry("OneHitCutTrees", false, "One Hit Cut Trees", "Chop trees with one hit", false);
         InfiFire = Game.CreateEntry("InfiFire", false, "Infinite Fires", "", false);
         StopTime = Game.CreateEntry("StopTime", false, "Stop Time", "", false);
         TimeMultiplier = Game.CreateEntry("TimeMultiplier", defaultMultiplierKey, "Time Speed Multiplier", "Will not work if Stop Time is enabled", false);
@@ -126,13 +130,15 @@ public static class Config
         ToggleFunctions.InfiniteBreath(InfiniteBreath.Value);
         ToggleFunctions.Invisibility(Invisibility.Value);
         ToggleFunctions.InstantBuild(InstantBuild.Value);
+        ToggleFunctions.OneHitCutTrees(OneHitCutTrees.Value);
         ToggleFunctions.SetInfiFires(InfiFire.Value);
         ToggleFunctions.CreativeMode(CreativeMode.Value);
+        ToggleFunctions.InfiniteBuildItems(InfiniteBuildItems.Value);
 
         GameObject artifactHeldObject = GameObject.Find("LocalPlayer/PlayerAnimator/Root/Hips/Spine/Spine1/Spine2/RightShoulder/RightArm/RightForeArm/RightForeArmTwistNew1/RightForeArmTwistNew2/RightForeArmTwistNew3/RightHand/RightHandWeapon/rightHandHeld/NEWITEMS/ArtifactHeld");
         if (InfiniteArtifact.Value == true)
         {
-            
+
             if (artifactHeldObject != null && _hasBeenSet == false)
             {
                 _hasBeenSet = true;
@@ -140,9 +146,9 @@ public static class Config
             }
             else if (artifactHeldObject != null && _hasBeenSet == true)
             {
-                
+
             }
-            else if (artifactHeldObject == null && _hasBeenSet == false) 
+            else if (artifactHeldObject == null && _hasBeenSet == false)
             {
                 InfiniteArtifact.Value = InfiniteArtifact.DefaultValue;
                 RLog.Msg("Artifact needs to be equipped to toggle InfiniteArtifact.");
@@ -217,5 +223,7 @@ public static class Config
         InfiFire.Value = InfiFire.DefaultValue;
         InfiniteArtifact.Value = InfiniteArtifact.DefaultValue;
         CreativeMode.Value = CreativeMode.DefaultValue;
+        OneHitCutTrees.Value = OneHitCutTrees.DefaultValue;
+        InfiniteBuildItems.Value = InfiniteBuildItems.DefaultValue;
     }
 }

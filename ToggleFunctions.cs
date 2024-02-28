@@ -89,7 +89,7 @@ namespace FrankyModMenu
             Config.IsNoSleep.Value = onoff;
             if (onoff)
             {
-                                
+
                 LocalPlayer.Vitals.Rested.SetMin(100);
                 return;
             }
@@ -119,14 +119,14 @@ namespace FrankyModMenu
             for (int i = 1; ; i++)
             {
                 GameObject parentGameObjectFire = GameObject.Find("Fire" + i + "/FireElement(Clone)/CookingSystem");
-                GameObject parentGameObjectBonFire = GameObject.Find("Fire" + i + "/BonFireElement(Clone)");
+                GameObject parentGameObjectBonFire = GameObject.Find("Fire" + i + "/BonFireElement(Clone)/CookingSystem");
                 if (parentGameObjectFire == null && parentGameObjectBonFire == null)
                 {
                     // If no more Fire objects are found, exit the loop
                     break;
                 }
 
-                
+
                 CookingFireNew cookingFire = parentGameObjectFire?.GetComponent<CookingFireNew>();
                 // Apply logic if CookingFireNew component is found
                 if (cookingFire != null)
@@ -240,6 +240,30 @@ namespace FrankyModMenu
             StructureCraftingSystem._instance.InstantBuild = false;
         }
 
+        public static void InfiniteBuildItems(bool onoff)
+        {
+            Config.InfiniteBuildItems.Value = onoff;
+            if (onoff)
+            {
+                LocalPlayer.Inventory.HeldOnlyItemController.InfiniteHack = true;
+                return;
+
+            }
+            LocalPlayer.Inventory.HeldOnlyItemController.InfiniteHack = false;
+        }
+
+        public static void OneHitCutTrees(bool onoff)
+        {
+            Config.OneHitCutTrees.Value = onoff;
+            if (onoff)
+            {
+                Sons.Settings.Cheats.Setup.OneHitTreeCutting = true;
+                return;
+
+            }
+            Sons.Settings.Cheats.Setup.OneHitTreeCutting = false;
+        }
+
         static float? fallDamage;
         public static void NoFallDamage(bool onoff)
         {
@@ -281,7 +305,7 @@ namespace FrankyModMenu
             //Sons.Gameplay.GameSetup.GameSetupManager.ApplyCreativeGameModeSettings()
             //Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
             Config.CreativeMode.Value = onoff;
-            if(onoff)
+            if (onoff)
             {
                 Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
                 return;
@@ -292,7 +316,7 @@ namespace FrankyModMenu
         public static void InfiniteArtifact(bool onoff)
         {
             Config.InfiniteArtifact.Value = onoff;
-            if(onoff)
+            if (onoff)
             {
                 SetInfiArtifact();
                 return;
@@ -304,7 +328,7 @@ namespace FrankyModMenu
         {
             GameObject artiObject = GameObject.Find("ArtifactHeld");
             ArtifactItemController artiObjItemCont = artiObject.GetComponent<ArtifactItemController>();
-            
+
             if (artiObject != null)
             {
                 //RLog.Msg("SetInfiArti - artiObject isnt null");
@@ -323,9 +347,9 @@ namespace FrankyModMenu
             else
             {
                 //RLog.Msg("SetInfiArti - ArtifactHeld not found");
-                return; 
+                return;
             }
-            
+
         }
 
         public static void RestoreInfiArtifact()
@@ -416,7 +440,7 @@ namespace FrankyModMenu
                 // RLog.Msg("Waited 60 seconds");
             }
         }
-  
+
         public static void SetUnbreakableArmour()
         {
 

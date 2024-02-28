@@ -2,9 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/ToniMacaroni/RedLoader/main/MetadataSchema.json",
   "id": "FrankyModMenu",
   "author": "Franky",
-  "version": "0.9.4",
+  "version": "0.9.6",
   "description": "A bunch of QOL and Cheat options.",
   "gameVersion": "1.0.0",
   "type": "Mod",
-  "url": "..."
+  "url": "https://sotf-mods.com/mods/franky/frankymodmenu"
 }

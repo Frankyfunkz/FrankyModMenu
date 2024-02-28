@@ -9,6 +9,22 @@ I'm open for suggestions
 
 # Changelog
 
+# 0.9.4
+Added
+- InfiniteArtifact ( Required to equip artifact on toggling )
+- CreativeMode ( Enables the inventory Toggle Mode option for free materials )
+
+Updated
+- InfiniteFire to include bonfires
+
+Fixed
+- Things that were initially broken by the 1.0 update.
+Now you will be able to run the mod on first start and dedicated servers again
+Though not everything might work on dedicated servers due too their limits of having no player host
+
+# 0.9.3
+- Temporary fix for 1.0 release
+
 # 0.9.2
 Added
 - Infinite fires

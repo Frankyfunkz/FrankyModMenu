@@ -9,6 +9,15 @@ I'm open for suggestions
 
 # Changelog
 
+# 0.9.6
+Added
+- Infinite Build Items (Works great with creative mode option to get your building mats)
+- One Hit Cut Trees
+
+# 0.9.5
+Fixed
+- Hotfix for bonfire not being infinite
+
 # 0.9.4
 Added
 - InfiniteArtifact ( Required to equip artifact on toggling )

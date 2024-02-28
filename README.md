@@ -1,11 +1,6 @@
 # FrankyModMenu
-Franky Mod Menu for SOTF
-
-# Todo
-I'm open for suggestions
-
-# In Progress
-
+Franky Mod Menu for SOTF using Redloader https://sotf-mods.com/mods/franky/frankymodmenu
+![FrankyModMenu](https://i.imgur.com/bwGvYI1.png)
 
 # Changelog
 

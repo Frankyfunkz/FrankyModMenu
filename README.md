@@ -4,6 +4,11 @@ Franky Mod Menu for SOTF using Redloader https://sotf-mods.com/mods/franky/frank
 
 # Changelog
 
+# 0.9.7
+
+- Changed some functions' handling
+- Split files for readability
+
 # 0.9.6
 Added
 - Infinite Build Items (Works great with creative mode option to get your building mats)

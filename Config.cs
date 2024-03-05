@@ -117,23 +117,23 @@ public static class Config
 
     public static void UpdateSettings()
     {
-        ToggleFunctions.GodMode(GodMode.Value);
+        BasicToggleFunctions.GodMode(GodMode.Value);
+        BasicToggleFunctions.InfStamina(IsInfStamina.Value);
+        BasicToggleFunctions.NoHungry(IsNoHungry.Value);
+        BasicToggleFunctions.NoDehydration(IsNoDehydration.Value);
+        BasicToggleFunctions.NoSleep(IsNoSleep.Value);
+        BasicToggleFunctions.NoFallDamage(IsNoFallDamage.Value);
+        BasicToggleFunctions.StopTime(StopTime.Value);
+        BasicToggleFunctions.InfiniteJumps(IsInfiniteJumps.Value);
+        BasicToggleFunctions.MarioMode(IsMarioMode.Value);
+        BasicToggleFunctions.InfiniteBreath(InfiniteBreath.Value);
+        BasicToggleFunctions.Invisibility(Invisibility.Value);
+        BasicToggleFunctions.InstantBuild(InstantBuild.Value);
+        BasicToggleFunctions.OneHitCutTrees(OneHitCutTrees.Value);
+        BasicToggleFunctions.CreativeMode(CreativeMode.Value);
+        BasicToggleFunctions.InfiniteBuildItems(InfiniteBuildItems.Value);
         ToggleFunctions.UnbreakableArmour(UnBreakableArmor.Value);
-        ToggleFunctions.InfStamina(IsInfStamina.Value);
-        ToggleFunctions.NoHungry(IsNoHungry.Value);
-        ToggleFunctions.NoDehydration(IsNoDehydration.Value);
-        ToggleFunctions.NoSleep(IsNoSleep.Value);
-        ToggleFunctions.NoFallDamage(IsNoFallDamage.Value);
-        ToggleFunctions.StopTime(StopTime.Value);
-        ToggleFunctions.InfiniteJumps(IsInfiniteJumps.Value);
-        ToggleFunctions.MarioMode(IsMarioMode.Value);
-        ToggleFunctions.InfiniteBreath(InfiniteBreath.Value);
-        ToggleFunctions.Invisibility(Invisibility.Value);
-        ToggleFunctions.InstantBuild(InstantBuild.Value);
-        ToggleFunctions.OneHitCutTrees(OneHitCutTrees.Value);
         ToggleFunctions.SetInfiFires(InfiFire.Value);
-        ToggleFunctions.CreativeMode(CreativeMode.Value);
-        ToggleFunctions.InfiniteBuildItems(InfiniteBuildItems.Value);
 
         GameObject artifactHeldObject = GameObject.Find("LocalPlayer/PlayerAnimator/Root/Hips/Spine/Spine1/Spine2/RightShoulder/RightArm/RightForeArm/RightForeArmTwistNew1/RightForeArmTwistNew2/RightForeArmTwistNew3/RightHand/RightHandWeapon/rightHandHeld/NEWITEMS/ArtifactHeld");
         if (InfiniteArtifact.Value == true)
@@ -151,17 +151,36 @@ public static class Config
             else if (artifactHeldObject == null && _hasBeenSet == false)
             {
                 InfiniteArtifact.Value = InfiniteArtifact.DefaultValue;
-                RLog.Msg("Artifact needs to be equipped to toggle InfiniteArtifact.");
+                RLog.Error("Artifact needs to be equipped to toggle InfiniteArtifact.");
+                SonsTools.ShowMessage("Artifact needs to be equipped to toggle InfiniteArtifact", 5f);
             }
         }
         else
         {
             if (artifactHeldObject != null)
             {
-                ToggleFunctions.InfiniteArtifact(InfiniteArtifact.Value);
+                if (_hasBeenSet == true)
+                {
+                    ToggleFunctions.InfiniteArtifact(InfiniteArtifact.Value);
+                }
+                else
+                {
+                    RLog.Error("Artifact needs to be equipped to toggle InfiniteArtifact.");
+                    SonsTools.ShowMessage("Artifact needs to be equipped to toggle InfiniteArtifact", 5f);
+                }
             }
             else
             {
+                if (_hasBeenSet == false)
+                {
+                    InfiniteArtifact.Value = InfiniteArtifact.DefaultValue;
+                    //RLog.Error("Artifact needs to be equipped to toggle InfiniteArtifact.");
+                    //SonsTools.ShowMessage("Artifact needs to be equipped to toggle InfiniteArtifact", 5f);
+                }
+                else
+                {
+                    ToggleFunctions.InfiniteArtifact(InfiniteArtifact.Value);
+                }
                 //RLog.Msg("Artifact needs to be equipped to toggle InfiniteArtifact.");
             }
         }

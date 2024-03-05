@@ -15,6 +15,7 @@ using HarmonyLib;
 using Sons.Weapon;
 using Sons.Gameplay;
 using Construction;
+using Sons.Gui;
 
 
 namespace FrankyModMenu;
@@ -121,6 +122,8 @@ public class FrankyModMenu : SonsMod
                 //_hasControl = false;
                 _returnedToTitle = true;
                 //RLog.Msg("In Title Screen, not first start, set hascontrol false, set _returnedToTitle " + _returnedToTitle);
+                //RLog.Msg("Returned to title, stopping firecheck coro");
+                ToggleFunctions.fireCoroShouldRun = false;
                 return;
             }
             else
@@ -129,7 +132,7 @@ public class FrankyModMenu : SonsMod
             }
         }
     }
-
+    
     private void HandleCutsceneComplete()
     {
         //RLog.Msg("HandleCutscene, waitforcutscene coro Complete, doing waitforlocalplayerfirst coro ");
@@ -145,6 +148,19 @@ public class FrankyModMenu : SonsMod
             RLog.Error("Cant change settings for FrankyModMenu while not In-Game");
             return;
         }
+        //Config.UpdateSettings();
+        ClosedPauseMenu().RunCoro();
+    }
+
+    public static IEnumerator ClosedPauseMenu()
+    {
+        static bool NotInPauseMenu()
+        {
+            //RLog.Msg("waiting until pausemenu isactive returns false");
+            return PauseMenu.IsActive == false;
+        }
+        yield return CustomWaitUntil.WaitUntil(new Func<bool>(NotInPauseMenu));
+        //RLog.Msg("No pause menu instance found, updating settings");
         Config.UpdateSettings();
     }
 

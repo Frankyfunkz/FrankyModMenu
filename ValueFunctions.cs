@@ -96,7 +96,7 @@ namespace FrankyModMenu
             }
         }
 
-        public void RestoreDefaultDamageValues()
+        public static void RestoreDefaultDamageValues()
         {
             foreach (var entry in defaultValues)
             {

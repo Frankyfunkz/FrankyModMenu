@@ -19,6 +19,7 @@ using SonsSdk.Attributes;
 using System.Runtime.CompilerServices;
 using Sons.Player;
 using Sons.Weapon;
+using System.Text;
 using System.Reflection;
 using Sons.Crafting.Structures;
 using Construction;
@@ -29,6 +30,7 @@ using Sons.Cutscenes;
 using Sons.Items;
 using Sons.Inventory;
 using Sons.Gameplay.GameSetup;
+using Sons.Utils;
 
 
 namespace FrankyModMenu
@@ -39,278 +41,138 @@ namespace FrankyModMenu
         {
             public float DefaultArmour;
         }
-        public static void GodMode(bool onoff)
-        {
-            Config.GodMode.Value = onoff;
-            if (onoff)
-            {
-                Sons.Settings.Cheats.Setup.GodMode = true;
-                return;
 
-            }
-            Sons.Settings.Cheats.Setup.GodMode = false;
-        }
+        // Define a list to store processed fire objects
+        private static List<GameObject> processedFireObjects = new List<GameObject>();
+        public static bool fireCoroShouldRun = true;
 
-        public static void InfStamina(bool onoff)
-        {
-            Config.IsInfStamina.Value = onoff;
-            if (onoff)
-            {
-                Sons.Settings.Cheats.Setup.InfiniteEnergy = true;
-                return;
-            }
-            Sons.Settings.Cheats.Setup.InfiniteEnergy = false;
-        }
-
-        public static void NoHungry(bool onoff)
-        {
-            Config.IsNoHungry.Value = onoff;
-            if (onoff)
-            {
-                LocalPlayer.Vitals.Fullness.SetMin(100);
-                return;
-            }
-            LocalPlayer.Vitals.Fullness.SetMin(0);
-        }
-
-        public static void NoDehydration(bool onoff)
-        {
-            Config.IsNoDehydration.Value = onoff;
-            if (onoff)
-            {
-                LocalPlayer.Vitals.Hydration.SetMin(100);
-                return;
-            }
-            LocalPlayer.Vitals.Hydration.SetMin(0);
-        }
-
-        public static void NoSleep(bool onoff)
-        {
-            Config.IsNoSleep.Value = onoff;
-            if (onoff)
-            {
-
-                LocalPlayer.Vitals.Rested.SetMin(100);
-                return;
-            }
-            LocalPlayer.Vitals.Rested.SetMin(0);
-        }
-
-        public static void InfiniteBreath(bool onoff)
-        {
-            Config.InfiniteBreath.Value = onoff;
-            if (onoff)
-            {
-                LocalPlayer.FpCharacter._vitals.LungBreathing.CurrentLungAir = 99999;
-                LocalPlayer.FpCharacter._vitals.LungBreathing.MaxLungAirCapacity = 99999;
-                LocalPlayer.FpCharacter._vitals.LungBreathing.MaxRebreatherAirCapacity = 99999;
-                return;
-
-            }
-            LocalPlayer.FpCharacter._vitals.LungBreathing.CurrentLungAir = 20;
-            LocalPlayer.FpCharacter._vitals.LungBreathing.MaxLungAirCapacity = 20;
-            LocalPlayer.FpCharacter._vitals.LungBreathing.MaxRebreatherAirCapacity = 300;
-        }
-
+        // Method to set infinite fires
         public static void SetInfiFires(bool onoff)
         {
             Config.InfiFire.Value = onoff;
+
+            // Start the coroutine if it's not already running and if onoff is true
+            if (onoff && fireCoroShouldRun)
+            {
+                fireCoroShouldRun = true;
+                CheckForFires().RunCoro();
+            }
+
             // Iterate over each Fire object
             for (int i = 1; ; i++)
             {
                 GameObject parentGameObjectFire = GameObject.Find("Fire" + i + "/FireElement(Clone)/CookingSystem");
                 GameObject parentGameObjectBonFire = GameObject.Find("Fire" + i + "/BonFireElement(Clone)/CookingSystem");
+
                 if (parentGameObjectFire == null && parentGameObjectBonFire == null)
                 {
                     // If no more Fire objects are found, exit the loop
                     break;
                 }
 
+                UpdateFires(parentGameObjectFire, onoff);
+                UpdateFires(parentGameObjectBonFire, onoff);
+            }
+        }
 
-                CookingFireNew cookingFire = parentGameObjectFire?.GetComponent<CookingFireNew>();
-                // Apply logic if CookingFireNew component is found
+        // Check for new fires and remove no longer existing fires
+        public static IEnumerator CheckForFires()
+        {
+            while (fireCoroShouldRun)
+            {
+                // Wait for 2 minutes before checking again
+                yield return new WaitForSeconds(120);
+
+                // Check if Config.InfiFire.Value is true
+                if (!Config.InfiFire.Value)
+                {
+                    // If it's false, stop the coroutine
+                    fireCoroShouldRun = false;
+                    yield break;
+                }
+
+                // Check for new fires and remove no longer existing fires
+                CheckAndProcessFires();
+
+                // Update the fires after checking for new fires
+                foreach (GameObject fireObject in processedFireObjects)
+                {
+                    UpdateFires(fireObject, Config.InfiFire.Value);
+                }
+            }
+        }
+
+        private static void CheckAndProcessFires()
+        {
+            // Create a new list to store the updated fire objects
+            List<GameObject> updatedFireObjects = new List<GameObject>();
+
+            // Iterate over each Fire object and add it to the updated list if it still exists
+            for (int i = 1; ; i++)
+            {
+                GameObject parentGameObjectFire = GameObject.Find("Fire" + i + "/FireElement(Clone)/CookingSystem");
+                GameObject parentGameObjectBonFire = GameObject.Find("Fire" + i + "/BonFireElement(Clone)/CookingSystem");
+
+                if (parentGameObjectFire == null && parentGameObjectBonFire == null)
+                {
+                    // If no more Fire objects are found, exit the loop
+                    break;
+                }
+
+                if (parentGameObjectFire != null)
+                {
+                    updatedFireObjects.Add(parentGameObjectFire);
+                }
+
+                if (parentGameObjectBonFire != null)
+                {
+                    updatedFireObjects.Add(parentGameObjectBonFire);
+                }
+            }
+
+            // Check for removed fires and remove them from the processed list
+            foreach (GameObject fireObject in processedFireObjects)
+            {
+                if (!updatedFireObjects.Contains(fireObject))
+                {
+                    // Do something here if needed
+                }
+            }
+
+            // Update the processed fire objects list with the updated list
+            processedFireObjects = updatedFireObjects;
+
+            // Reapply values to all fire objects
+            foreach (GameObject fireObject in processedFireObjects)
+            {
+                UpdateFires(fireObject, Config.InfiFire.Value);
+            }
+        }
+
+        private static void UpdateFires(GameObject fireElement, bool onoff)
+        {
+            if (fireElement != null)
+            {
+                CookingFireNew cookingFire = fireElement.GetComponent<CookingFireNew>();
+
                 if (cookingFire != null)
                 {
-                    // Apply logic based on the configuration setting
                     if (onoff)
                     {
-                        //RLog.Msg("InfiFire value true, checking islit");
-                        if (!cookingFire.IsLit)
-                        {
-                            // Set the fire alight and adjust fuel amount and drain rate
-                            //RLog.Msg("Fire not lit, setting alight, setting maxfuel and fuel 99999 and low drainrate");
-                            cookingFire.SetAlight();
-                            cookingFire._fuel._fuelMax = 999999f;
-                            cookingFire._fuel.Amount = 999999f;
-                            cookingFire._saveData.FuelDrainRate = 1E-05f;
-                        }
-                        else
-                        {
-
-                            // Adjust fuel amount and drain rate
-                            //RLog.Msg("Fire already lit, setting maxfuel and fuel 99999 and low drainrate");
-                            cookingFire._fuel._fuelMax = 999999f;
-                            cookingFire._fuel.Amount = 999999f;
-                            cookingFire._saveData.FuelDrainRate = 1E-05f;
-                        }
-
+                        // Adjust fuel properties
+                        cookingFire._fuel._fuelMax = 3660f;
+                        cookingFire._fuel.Amount = 3660f;
+                        cookingFire._saveData.FuelDrainRate = 0;
                     }
                     else
                     {
                         // Restore default values
-                        //RLog.Msg("InfiFire value false, restoring defaults");
-                        cookingFire._fuel._fuelMax = 1260f;
-                        cookingFire._fuel.Amount = 1260f;
+                        cookingFire._fuel._fuelMax = 3600f;
+                        cookingFire._fuel.Amount = 3660f;
                         cookingFire._saveData.FuelDrainRate = 0.25f;
                     }
                 }
-                else
-                {
-                    // Handle case where CookingFireNew component is not found
-                    //RLog.Msg("CookingFireNew component not found on Fire" + i + ".");
-                }
-
-                CookingFireNew cookingBonFire = parentGameObjectBonFire?.GetComponent<CookingFireNew>();
-                if (cookingBonFire != null)
-                {
-                    // Apply logic based on the configuration setting
-                    if (onoff)
-                    {
-                        //RLog.Msg("InfiFire value true, checking islit");
-                        if (!cookingBonFire.IsLit)
-                        {
-                            // Set the fire alight and adjust fuel amount and drain rate
-                            //RLog.Msg("Fire not lit, setting alight, setting maxfuel and fuel 99999 and low drainrate");
-                            cookingBonFire.SetAlight();
-                            cookingBonFire._fuel._fuelMax = 999999f;
-                            cookingBonFire._fuel.Amount = 999999f;
-                            cookingBonFire._saveData.FuelDrainRate = 1E-05f;
-                        }
-                        else
-                        {
-
-                            // Adjust fuel amount and drain rate
-                            //RLog.Msg("Fire already lit, setting maxfuel and fuel 99999 and low drainrate");
-                            cookingBonFire._fuel._fuelMax = 999999f;
-                            cookingBonFire._fuel.Amount = 999999f;
-                            cookingBonFire._saveData.FuelDrainRate = 1E-05f;
-                        }
-
-                    }
-                    else
-                    {
-                        // Restore default values
-                        //RLog.Msg("InfiFire value false, restoring defaults");
-                        cookingBonFire._fuel._fuelMax = 1260f;
-                        cookingBonFire._fuel.Amount = 1260f;
-                        cookingBonFire._saveData.FuelDrainRate = 0.25f;
-                    }
-                }
-                else
-                {
-                    // Handle case where cookingBonFireNew component is not found
-                    //RLog.Msg("cookingBonFireNew component not found on Fire" + i + ".");
-                }
             }
-        }
-
-        public static void Invisibility(bool onoff)
-        {
-            Config.Invisibility.Value = onoff;
-            if (onoff)
-            {
-                //RLog.Msg(ConsoleColor.Green, "Invisible is true");
-                VailActorManager.SetGhostPlayer(true);
-
-                return;
-            }
-            //RLog.Msg(ConsoleColor.Red, "Invisible is false");
-            VailActorManager.SetGhostPlayer(false);
-
-        }
-
-        public static void InstantBuild(bool onoff)
-        {
-            Config.InstantBuild.Value = onoff;
-            if (onoff)
-            {
-                StructureCraftingSystem._instance.InstantBuild = true;
-                return;
-            }
-            StructureCraftingSystem._instance.InstantBuild = false;
-        }
-
-        public static void InfiniteBuildItems(bool onoff)
-        {
-            Config.InfiniteBuildItems.Value = onoff;
-            if (onoff)
-            {
-                LocalPlayer.Inventory.HeldOnlyItemController.InfiniteHack = true;
-                return;
-
-            }
-            LocalPlayer.Inventory.HeldOnlyItemController.InfiniteHack = false;
-        }
-
-        public static void OneHitCutTrees(bool onoff)
-        {
-            Config.OneHitCutTrees.Value = onoff;
-            if (onoff)
-            {
-                Sons.Settings.Cheats.Setup.OneHitTreeCutting = true;
-                return;
-
-            }
-            Sons.Settings.Cheats.Setup.OneHitTreeCutting = false;
-        }
-
-        static float? fallDamage;
-        public static void NoFallDamage(bool onoff)
-        {
-            fallDamage ??= LocalPlayer.FpCharacter._baseFallDamage;
-            Config.IsNoFallDamage.Value = onoff;
-            if (onoff)
-            {
-                LocalPlayer.FpCharacter._baseFallDamage = 0;
-                return;
-            }
-            LocalPlayer.FpCharacter._baseFallDamage = (float)fallDamage;
-        }
-        public static void StopTime(bool onoff)
-        {
-            Config.StopTime.Value = onoff;
-            if (onoff)
-            {
-                //RLog.Msg("StopTime on basetimespeed 0f");
-
-                TimeOfDayHolder.SetBaseTimeSpeed(0f);
-                return;
-            }
-            TimeOfDayHolder.SetBaseTimeSpeed(FrankyModMenu.baseSpeedMultiplier);
-            //RLog.Msg("StopTime off basetimespeed set to default");
-
-        }
-        public static void InfiniteJumps(bool onoff)
-        {
-            Config.IsInfiniteJumps.Value = onoff;
-        }
-        public static void MarioMode(bool onoff)
-        {
-            Config.IsMarioMode.Value = onoff;
-        }
-
-        public static void CreativeMode(bool onoff)
-        {
-            //Sons.Gameplay.GameSetup.CreativeModeUiEnabler creativeModeUiEnabler = new Sons.Gameplay.GameSetup.CreativeModeUiEnabler();
-            //Sons.Gameplay.GameSetup.GameSetupManager.ApplyCreativeGameModeSettings()
-            //Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
-            Config.CreativeMode.Value = onoff;
-            if (onoff)
-            {
-                Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
-                return;
-            }
-            Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(false);
         }
 
         public static void InfiniteArtifact(bool onoff)
@@ -327,10 +189,11 @@ namespace FrankyModMenu
         public static void SetInfiArtifact()
         {
             GameObject artiObject = GameObject.Find("ArtifactHeld");
-            ArtifactItemController artiObjItemCont = artiObject.GetComponent<ArtifactItemController>();
+            
 
             if (artiObject != null)
             {
+                ArtifactItemController artiObjItemCont = artiObject.GetComponent<ArtifactItemController>();
                 //RLog.Msg("SetInfiArti - artiObject isnt null");
                 if (artiObjItemCont != null)
                 {
@@ -354,19 +217,12 @@ namespace FrankyModMenu
 
         public static void RestoreInfiArtifact()
         {
-            /*
-            VolumeContainerItemInstanceModule VolData;
-            if (VolData.ItemId == 707)
-            {
-
-            }
-            //var artiItem = ItemDatabaseManager.ItemById(707);
-            */
             GameObject artiObject = GameObject.Find("ArtifactHeld");
-            ArtifactItemController artiObjItemCont = artiObject.GetComponent<ArtifactItemController>();
+            
 
             if (artiObject != null)
             {
+                ArtifactItemController artiObjItemCont = artiObject.GetComponent<ArtifactItemController>();
                 //RLog.Msg("RestoreInfiArti - artiObject isnt null");
                 if (artiObjItemCont != null)
                 {
@@ -386,6 +242,8 @@ namespace FrankyModMenu
                 return;
             }
         }
+
+
         public static void UnbreakableArmour(bool onoff)
         {
             Config.UnBreakableArmor.Value = onoff;

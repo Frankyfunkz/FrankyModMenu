@@ -180,3 +180,5 @@ C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\Sons.Constructi
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\Sons.ConstructionBoltToken.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\com.alteregogames.aeg-fsr.Runtime.HDRP.dll
 C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\com.alteregogames.aeg-fsr.Runtime.dll
+C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\Il2CppInterop.HarmonySupport.dll
+C:\Users\gocre\Desktop\SotF stuff\FrankyModMenu\bin\Release\net6\Il2CppInterop.HarmonySupport.xml

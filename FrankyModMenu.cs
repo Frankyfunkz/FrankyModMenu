@@ -113,6 +113,8 @@ public class FrankyModMenu : SonsMod
 
     }
 
+
+
     protected override void OnSonsSceneInitialized(ESonsScene sonsScene)
     {
         if (sonsScene == ESonsScene.Title)
@@ -191,6 +193,14 @@ public class FrankyModMenu : SonsMod
             SettingsRegistry.CreateSettings(this, null, typeof(Config), callback: OnSettingsUiClosed);
             Config.UpdateOrRestoreDefaults();
             _firstStart = false;
+
+            var axelInstalled = RegisteredMods.Any(x => x.ID == "AxelModMenu");
+            if(axelInstalled)
+            {
+                SonsTools.ShowMessage("You are using both Franky and Axel Mod menu.", 5f);
+                yield return new WaitForSeconds(1f);
+                SonsTools.ShowMessage("Some similar functionality from Franky's menu will not update.", 5f);
+            }
         }
         else
         {

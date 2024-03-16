@@ -333,7 +333,8 @@ namespace FrankyModMenu
             { 519, new ArmourValues { DefaultArmour = 40f } },  // Deer
             { 494, new ArmourValues { DefaultArmour = 65f } },  // Bone
             { 593, new ArmourValues { DefaultArmour = 80f } },  // Creepy
-            { 554, new ArmourValues { DefaultArmour = 100f } }   // Tech
+            { 554, new ArmourValues { DefaultArmour = 100f } }, // Tech
+            { 727, new ArmourValues { DefaultArmour = 130f } }  // Solafite   
         };
 
         public static void RestoreDefaultArmorValues()

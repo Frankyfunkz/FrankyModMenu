@@ -117,13 +117,39 @@ public static class Config
 
     public static void UpdateSettings()
     {
-        BasicToggleFunctions.GodMode(GodMode.Value);
-        BasicToggleFunctions.InfStamina(IsInfStamina.Value);
-        BasicToggleFunctions.NoHungry(IsNoHungry.Value);
-        BasicToggleFunctions.NoDehydration(IsNoDehydration.Value);
-        BasicToggleFunctions.NoSleep(IsNoSleep.Value);
-        BasicToggleFunctions.NoFallDamage(IsNoFallDamage.Value);
-        BasicToggleFunctions.StopTime(StopTime.Value);
+        
+        var axelInstalled = ModTypeBase<SonsMod>.RegisteredMods.Any(x => x.ID == "AxelModMenu");
+
+        if (!axelInstalled)
+        {
+            BasicToggleFunctions.GodMode(GodMode.Value);
+            BasicToggleFunctions.InfStamina(IsInfStamina.Value);
+            BasicToggleFunctions.NoHungry(IsNoHungry.Value);
+            BasicToggleFunctions.NoDehydration(IsNoDehydration.Value);
+            BasicToggleFunctions.NoSleep(IsNoSleep.Value);
+            BasicToggleFunctions.NoFallDamage(IsNoFallDamage.Value);
+            ValueFunctions.WalkSpeed(WalkSpeed.Value);
+            ValueFunctions.RunSpeed(RunSpeed.Value);
+            ValueFunctions.SwimSpeed(SwimSpeed.Value);
+            ValueFunctions.JumpMultiplier(JumpMultiplier.Value);
+            BasicToggleFunctions.StopTime(StopTime.Value);
+            //RLog.Msg("Stoptime is on, not updating Time Multiplier");
+            if (StopTime.Value == true)
+            {
+                //RLog.Msg("Stoptime is on, not updating Time Multiplier");
+                return;
+            }
+            else
+            {
+                //RLog.Msg("Stoptime is off, updating Time Multiplier");
+                if (float.TryParse(TimeMultiplier.Value, out float timeMultiplierValue))
+                {
+                    ValueFunctions.TimeMultiplier(timeMultiplierValue);
+                }
+            }
+        }
+                
+        
         BasicToggleFunctions.InfiniteJumps(IsInfiniteJumps.Value);
         BasicToggleFunctions.MarioMode(IsMarioMode.Value);
         BasicToggleFunctions.InfiniteBreath(InfiniteBreath.Value);
@@ -184,27 +210,10 @@ public static class Config
                 //RLog.Msg("Artifact needs to be equipped to toggle InfiniteArtifact.");
             }
         }
-        ValueFunctions.WalkSpeed(WalkSpeed.Value);
-        ValueFunctions.RunSpeed(RunSpeed.Value);
-        ValueFunctions.SwimSpeed(SwimSpeed.Value);
-        ValueFunctions.JumpMultiplier(JumpMultiplier.Value);
+
         if (float.TryParse(DamageMultiplier.Value, out float damageMultiplierValue))
         {
             ValueFunctions.DamageMultiplier(damageMultiplierValue);
-        }
-        //RLog.Msg("Stoptime is on, not updating Time Multiplier");
-        if (StopTime.Value == true)
-        {
-            //RLog.Msg("Stoptime is on, not updating Time Multiplier");
-            return;
-        }
-        else
-        {
-            //RLog.Msg("Stoptime is off, updating Time Multiplier");
-            if (float.TryParse(TimeMultiplier.Value, out float timeMultiplierValue))
-            {
-                ValueFunctions.TimeMultiplier(timeMultiplierValue);
-            }
         }
     }
     public static void UpdateOrRestoreDefaults()

@@ -4,6 +4,14 @@ Franky Mod Menu for SOTF using Redloader https://sotf-mods.com/mods/franky/frank
 
 # Changelog
 
+# 0.9.8
+
+Fixed
+- Compatibility with axel menu, will now disable similar features from updating
+
+Added
+- New armor to Unbreakable Armor list
+
 # 0.9.7
 
 - Changed some functions' handling

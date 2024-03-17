@@ -22,6 +22,7 @@ public static class Config
 
     //public static KeybindConfigEntry ToggleKey { get; private set; }
     public static ConfigEntry<bool> ShouldSaveSettings { get; private set; }
+    public static ConfigEntry<float> BadPCDelay { get; private set; }
 
     public static ConfigEntry<bool> GodMode { get; private set; }
     public static ConfigEntry<bool> UnBreakableArmor { get; private set; }
@@ -81,6 +82,8 @@ public static class Config
         }
 
         ShouldSaveSettings = Category.CreateEntry("SaveSettings", true, "Save Settings", "If enabled settings will be persistent across saves", false);
+        BadPCDelay = Category.CreateEntry("BadPCDelay", 0f, "Slow Computer Delay(In Seconds)", "Optional delay in case of Slow Computer", false);
+        BadPCDelay.SetRange(0f, 10f);
         GodMode = Player.CreateEntry("GodMode", false, "GodMode", "", false);
         UnBreakableArmor = Player.CreateEntry("UnbreakableArmor", false, "Unbreakable Armor", "", false);
         IsInfStamina = Player.CreateEntry("InfStamina", false, "Infinite Stamina", "", false);
@@ -216,6 +219,7 @@ public static class Config
             ValueFunctions.DamageMultiplier(damageMultiplierValue);
         }
     }
+
     public static void UpdateOrRestoreDefaults()
     {
         if (Config.ShouldSaveSettings.Value == true)

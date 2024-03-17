@@ -156,6 +156,16 @@ namespace FrankyModMenu
             {
                 item.Ammo.ProjectileInfo.muzzleDamage = defaultValues.Damage * floatValue;
             }
+            //Handle ShotgunSlug cause they changed the projectileType name...
+            else if (item.Ammo != null && item.Ammo.ProjectileInfo.ProjectileType == ImpactProjectileType.ShotgunSlug)
+            {
+                item.Ammo.ProjectileInfo.muzzleDamage = defaultValues.Damage * floatValue;
+            }
+            //Handle ShotgunBuckshot cause they changed the projectileType name...
+            else if (item.Ammo != null && item.Ammo.ProjectileInfo.ProjectileType == ImpactProjectileType.ShotgunBuckshot)
+            {
+                item.Ammo.ProjectileInfo.muzzleDamage = defaultValues.Damage * floatValue;
+            }
             // Handle Small Rocks and Golf Balls
             else if (item.Ammo != null && item.Ammo.ProjectileInfo.ExplosionDamage <= 0 && item.Ammo.ProjectileInfo.ProjectileType == ImpactProjectileType.NonLethal)
             {

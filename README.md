@@ -4,6 +4,14 @@ Franky Mod Menu for SOTF using Redloader https://sotf-mods.com/mods/franky/frank
 
 # Changelog
 
+# 0.9.9
+
+Fixed
+- Damage multiplier for shotgun. They sneakily updated variables. Works now
+
+Added
+- Slow PC Delay. Completely optional delay (Default 0, max 10 seconds) for slower computers in case your load times are longer and some values aren't set due to that.
+
 # 0.9.8
 
 Fixed

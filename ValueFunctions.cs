@@ -26,29 +26,25 @@ namespace FrankyModMenu
         }
         public static void WalkSpeed(float value)
         {
-            Config.WalkSpeed.Value = value;
-            LocalPlayer.FpCharacter.SetWalkSpeed(value);
+            LocalPlayer.FpCharacter.SetWalkSpeed(2.6f * value);
         }
 
         public static void RunSpeed(float value)
         {
-            Config.RunSpeed.Value = value;
-            LocalPlayer.FpCharacter.SetRunSpeed(value);
+            LocalPlayer.FpCharacter.SetRunSpeed(5.4f * value);
         }
 
         public static void SwimSpeed(float value)
         {
-            Config.SwimSpeed.Value = value;
-            LocalPlayer.FpCharacter.SetSwimSpeed(value);
+            LocalPlayer.FpCharacter.SetSwimSpeed(3f * value);
         }
 
         public static void JumpMultiplier(float value)
         {
-            Config.JumpMultiplier.Value = value;
-            LocalPlayer.FpCharacter.SetSuperJump(value);
+            LocalPlayer.FpCharacter.SetSuperJump(1f * value);
         }
 
-        public static void TimeMultiplier(float value)
+        public static void TimeMultiplier()
         {
             if (float.TryParse(Config.TimeMultiplier.Value, out floatValue))
             {
@@ -70,7 +66,7 @@ namespace FrankyModMenu
             //RLog.Msg("SetTimeMultiplier called 1f x setvalue");
             TimeOfDayHolder.SetBaseTimeSpeed(1f * floatValue);
         }
-        public static void DamageMultiplier(float value)
+        public static void DamageMultiplier()
         {
             if (float.TryParse(Config.DamageMultiplier.Value, out floatValue))
             {

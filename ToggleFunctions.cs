@@ -42,6 +42,7 @@ namespace FrankyModMenu
             public float DefaultArmour;
         }
 
+        
         // Define a list to store processed fire objects
         private static List<GameObject> processedFireObjects = new List<GameObject>();
         public static bool fireCoroShouldRun = true;
@@ -174,7 +175,7 @@ namespace FrankyModMenu
                 }
             }
         }
-
+        
         public static void InfiniteArtifact(bool onoff)
         {
             Config.InfiniteArtifact.Value = onoff;

@@ -13,6 +13,8 @@ namespace FrankyModMenu;
 public static class Config
 {
     public static bool _hasBeenSet = false;
+    public static bool _isAxNotified = false;
+    public static bool _isBBNotified = false;
 
     public static ConfigCategory Category { get; private set; }
     public static ConfigCategory Player { get; private set; }
@@ -52,8 +54,9 @@ public static class Config
     public static ConfigEntry<float> SwimSpeed { get; private set; }
     public static ConfigEntry<float> JumpMultiplier { get; private set; }
     public static ConfigEntry<bool> IsInfiniteJumps { get; private set; }
-
     public static ConfigEntry<bool> IsMarioMode { get; private set; }
+    public static ConfigEntry<bool> AxMenuCompatibility { get; private set; }
+    public static ConfigEntry<bool> BuildBuddyCompatibility { get; private set; }
 
 
     public static Dictionary<string, float> multiplierdict = new()
@@ -106,16 +109,18 @@ public static class Config
         StopTime = Game.CreateEntry("StopTime", false, "Stop Time", "", false);
         TimeMultiplier = Game.CreateEntry("TimeMultiplier", defaultMultiplierKey, "Time Speed Multiplier", "Will not work if Stop Time is enabled", false);
         TimeMultiplier.SetOptions(multiplierdict.Keys.ToArray());
-        WalkSpeed = Physics.CreateEntry("WalkSpeed", 2.6f, "WalkSpeed", "", false);
-        WalkSpeed.SetRange(1f, 50f);
-        RunSpeed = Physics.CreateEntry("RunSpeed", 5.4f, "RunSpeed", "", false);
-        RunSpeed.SetRange(1f, 50f);
-        SwimSpeed = Physics.CreateEntry("SwimSpeed", 3f, "SwimSpeed", "", false);
-        SwimSpeed.SetRange(1f, 50f);
+        WalkSpeed = Physics.CreateEntry("WalkSpeed", 1f, "WalkSpeed", "", false);
+        WalkSpeed.SetRange(1f, 100f);
+        RunSpeed = Physics.CreateEntry("RunSpeed", 1f, "RunSpeed", "", false);
+        RunSpeed.SetRange(1f, 100f);
+        SwimSpeed = Physics.CreateEntry("SwimSpeed", 1f, "SwimSpeed", "", false);
+        SwimSpeed.SetRange(1f, 100f);
         JumpMultiplier = Physics.CreateEntry("JumpMultiplier", 0f, "Jump Height Multiplier", "", false);
         JumpMultiplier.SetRange(0f, 100f);
         IsInfiniteJumps = Physics.CreateEntry("InfiniteJumps", false, "Infinite Jumps", "", false);
         IsMarioMode = Misc.CreateEntry("MarioMode", false, "MarioMode", "Only works if Infinite Jumps is enabled", false);
+        BuildBuddyCompatibility = Misc.CreateEntry("BBCompat", false, "Compatibility with BuilderBuddy", "If enabled prevents updating of similar options used in BuilderBuddy", false);
+        AxMenuCompatibility = Misc.CreateEntry("AxMenuCompat", false, "Compatibility with Axel ModMenu", "If enabled prevents updating of similar options used in Axel's menu", false);
     }
 
     public static void UpdateSettings()
@@ -123,7 +128,7 @@ public static class Config
         
         var axelInstalled = ModTypeBase<SonsMod>.RegisteredMods.Any(x => x.ID == "AxelModMenu");
 
-        if (!axelInstalled)
+        if ((!axelInstalled && !AxMenuCompatibility.Value) || (!axelInstalled && AxMenuCompatibility.Value))
         {
             BasicToggleFunctions.GodMode(GodMode.Value);
             BasicToggleFunctions.InfStamina(IsInfStamina.Value);
@@ -136,7 +141,7 @@ public static class Config
             ValueFunctions.SwimSpeed(SwimSpeed.Value);
             ValueFunctions.JumpMultiplier(JumpMultiplier.Value);
             BasicToggleFunctions.StopTime(StopTime.Value);
-            //RLog.Msg("Stoptime is on, not updating Time Multiplier");
+
             if (StopTime.Value == true)
             {
                 //RLog.Msg("Stoptime is on, not updating Time Multiplier");
@@ -145,25 +150,55 @@ public static class Config
             else
             {
                 //RLog.Msg("Stoptime is off, updating Time Multiplier");
-                if (float.TryParse(TimeMultiplier.Value, out float timeMultiplierValue))
-                {
-                    ValueFunctions.TimeMultiplier(timeMultiplierValue);
-                }
+                ValueFunctions.TimeMultiplier();
+            }
+
+
+        }
+        if (AxMenuCompatibility.Value && axelInstalled)
+        {
+            if (!_isAxNotified)
+            {
+                _isAxNotified = true;
+                SonsTools.ShowMessage("AxelMenu Compatibility on, see logs for affected functions", 5f);
+                RLog.Msg("Axel Menu Compatibility Enabled - Skipping updating of:");
+                RLog.Msg("Godmode, Stamina, Hunger, Hydration, NeverTired, Fall Damage");
+                RLog.Msg("WalkSpeed, Runspeed, SwimSpeed, Jump Height, StopTime, Time Speed");
             }
         }
-                
         
+
+
         BasicToggleFunctions.InfiniteJumps(IsInfiniteJumps.Value);
         BasicToggleFunctions.MarioMode(IsMarioMode.Value);
         BasicToggleFunctions.InfiniteBreath(InfiniteBreath.Value);
         BasicToggleFunctions.Invisibility(Invisibility.Value);
-        BasicToggleFunctions.InstantBuild(InstantBuild.Value);
-        BasicToggleFunctions.OneHitCutTrees(OneHitCutTrees.Value);
-        BasicToggleFunctions.CreativeMode(CreativeMode.Value);
-        BasicToggleFunctions.InfiniteBuildItems(InfiniteBuildItems.Value);
-        ToggleFunctions.UnbreakableArmour(UnBreakableArmor.Value);
-        ToggleFunctions.SetInfiFires(InfiFire.Value);
 
+        var BBInstalled = ModTypeBase<SonsMod>.RegisteredMods.Any(x => x.ID == "BuilderBuddy");
+
+        if ((!BBInstalled && !BuildBuddyCompatibility.Value) || (!BBInstalled && BuildBuddyCompatibility.Value))
+        {
+            BasicToggleFunctions.InstantBuild(InstantBuild.Value);
+            BasicToggleFunctions.OneHitCutTrees(OneHitCutTrees.Value);
+            BasicToggleFunctions.CreativeMode(CreativeMode.Value);
+            BasicToggleFunctions.InfiniteBuildItems(InfiniteBuildItems.Value);
+            ToggleFunctions.SetInfiFires(InfiFire.Value);
+        }
+        if (BuildBuddyCompatibility.Value && BBInstalled)
+        {
+            if (!_isBBNotified)
+            {
+                _isBBNotified = true;
+                SonsTools.ShowMessage("BuilderBuddy Compatibility on, see logs for affected functions", 5f);
+                RLog.Msg("BuilderBuddy Compatibility Enabled - Skipping updating of:");
+                RLog.Msg("CreativeMode, Instant Blueprint Build, Infinite Build Items, One Hit Cut Trees, Infinite Fires");
+                
+            }
+        }
+        ToggleFunctions.UnbreakableArmour(UnBreakableArmor.Value);
+        
+        ValueFunctions.DamageMultiplier();
+        
         GameObject artifactHeldObject = GameObject.Find("LocalPlayer/PlayerAnimator/Root/Hips/Spine/Spine1/Spine2/RightShoulder/RightArm/RightForeArm/RightForeArmTwistNew1/RightForeArmTwistNew2/RightForeArmTwistNew3/RightHand/RightHandWeapon/rightHandHeld/NEWITEMS/ArtifactHeld");
         if (InfiniteArtifact.Value == true)
         {
@@ -213,11 +248,7 @@ public static class Config
                 //RLog.Msg("Artifact needs to be equipped to toggle InfiniteArtifact.");
             }
         }
-
-        if (float.TryParse(DamageMultiplier.Value, out float damageMultiplierValue))
-        {
-            ValueFunctions.DamageMultiplier(damageMultiplierValue);
-        }
+        
     }
 
     public static void UpdateOrRestoreDefaults()
@@ -257,5 +288,7 @@ public static class Config
         CreativeMode.Value = CreativeMode.DefaultValue;
         OneHitCutTrees.Value = OneHitCutTrees.DefaultValue;
         InfiniteBuildItems.Value = InfiniteBuildItems.DefaultValue;
+        AxMenuCompatibility.Value = AxMenuCompatibility.DefaultValue;
+        BuildBuddyCompatibility.Value = BuildBuddyCompatibility.DefaultValue;
     }
 }

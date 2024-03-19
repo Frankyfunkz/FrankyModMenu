@@ -16,19 +16,19 @@ using Sons.Weapon;
 using Sons.Gameplay;
 using Construction;
 using Sons.Gui;
+using Il2CppInterop.Common;
+using HarmonyLib.Tools;
 
 
 namespace FrankyModMenu;
 
 public class FrankyModMenu : SonsMod
 {
-    public delegate void CutsceneCallback();
-
-
-    public static event CutsceneCallback OnCutsceneComplete;
+    //public delegate void CutsceneCallback();
+    // public static event CutsceneCallback OnCutsceneComplete;
     public FrankyModMenu()
     {
-        OnCutsceneComplete += HandleCutsceneComplete;
+        //OnCutsceneComplete += HandleCutsceneComplete;
         OnWorldUpdatedCallback = OnWorldUpdate;
         HarmonyPatchAll = true;
     }
@@ -77,10 +77,9 @@ public class FrankyModMenu : SonsMod
     private bool hasJumpSoundPlayed = false;
     private bool isFalling = false;
     private bool AlternateJumpSound = false;
-    public static float baseSpeedMultiplier = TimeOfDayHolder.GetBaseSpeedMultiplier();
-    public static bool _hasControl = false;
-    public static bool _firstStart = true;
-    public static bool _returnedToTitle = false;
+    public static float FbaseSpeedMultiplier = TimeOfDayHolder.GetBaseSpeedMultiplier();
+    public static bool _FfirstStart = true;
+    public static bool _FreturnedToTitle = false;
 
     protected override void OnInitializeMod()
     {
@@ -89,6 +88,8 @@ public class FrankyModMenu : SonsMod
 
     protected override void OnSdkInitialized()
     {
+        SettingsRegistry.CreateSettings(this, null, typeof(Config), callback: OnSettingsUiClosed);
+        SdkEvents.OnInWorldUpdate.Subscribe(OnFirstInWorldUpdate, unsubscribeOnFirstInvocation: true);
         FrankyModMenuUi.Create();
         SoundTools.RegisterSound("JumpSound1", Path.Combine(LoaderEnvironment.ModsDirectory, @"FrankyModMenu\MarioJump1.mp3"));
         SoundTools.RegisterSound("JumpSound2", Path.Combine(LoaderEnvironment.ModsDirectory, @"FrankyModMenu\MarioJump2.mp3"));
@@ -97,33 +98,27 @@ public class FrankyModMenu : SonsMod
 
     protected override void OnGameStart()
     {
-        _firstStart = false;
-        _returnedToTitle = false;
-
-        if (CutsceneManager.GetActiveCutScene != null)
-        {
-            //RLog.Msg("OnGameStart in Cutscene, doing WaitForCutscene coro");
-            WaitForCutscene().RunCoro();
-        }
-        else
-        {
-            //RLog.Msg("OnGameStart, Not in Cutscene, doing only waitforplayer coro");
-            WaitForLocalPlayerFirst().RunCoro();
-        }
-
     }
 
+    public void OnFirstInWorldUpdate()
+    {
+        _FfirstStart = false;
+        //RLog.Msg("FMM - OnFirstWorldUpdate Called");
+        _FreturnedToTitle = false;
+        _FfirstStart = false;
+        SlightDelay().RunCoro();
+        //RLog.Msg("ReturnedToTitle = " + _FreturnedToTitle + " First start = " + _FfirstStart);
+    }
     protected override void OnSonsSceneInitialized(ESonsScene sonsScene)
     {
         if (sonsScene == ESonsScene.Title)
         {
-            if (!_firstStart)
+            if (!_FfirstStart)
             {
-                //_hasControl = false;
-                _returnedToTitle = true;
-                //RLog.Msg("In Title Screen, not first start, set hascontrol false, set _returnedToTitle " + _returnedToTitle);
+                _FreturnedToTitle = true;
+                //RLog.Msg("In Title Screen, not first start, set hascontrol false, set _FreturnedToTitle " + _FreturnedToTitle);
                 //RLog.Msg("Returned to title, stopping firecheck coro");
-                ToggleFunctions.fireCoroShouldRun = false;
+                //ToggleFunctions.fireCoroShouldRun = false;
                 return;
             }
             else
@@ -134,14 +129,14 @@ public class FrankyModMenu : SonsMod
     }
     private void OnSettingsUiClosed()
     {
-        if (!LocalPlayer._instance && _returnedToTitle)
+        if (!LocalPlayer._instance || _FreturnedToTitle || _FfirstStart)
         {
-            SonsTools.ShowMessageBox("Oops", "Cant change settings for FrankyModMenu while not In-Game");
+            //SonsTools.ShowMessageBox("Oops", "Cant change settings for FrankyModMenu while not In-Game");
             //SonsTools.ShowMessage("Cant change settings for FrankyModMenu while not In-Game", 3f);
-            RLog.Error("Cant change settings for FrankyModMenu while not In-Game");
+            //RLog.Error("Cant change settings for FrankyModMenu while not In-Game");
+            //RLog.Error("PlayerInstance = " + LocalPlayer._instance + " ReturnedToTitle = " + _FreturnedToTitle + " FirstStart = " + _FfirstStart);
             return;
         }
-        //Config.UpdateSettings();
         ClosedPauseMenu().RunCoro();
     }
 
@@ -151,6 +146,7 @@ public class FrankyModMenu : SonsMod
         {
             //RLog.Msg("waiting until pausemenu isactive returns false");
             return PauseMenu.IsActive == false;
+            
         }
         yield return CustomWaitUntil.WaitUntil(new Func<bool>(NotInPauseMenu));
         //RLog.Msg("No pause menu instance found, updating settings");
@@ -160,77 +156,12 @@ public class FrankyModMenu : SonsMod
         }
     }
 
-    public static IEnumerator WaitForCutscene()
-    {
-        static bool IsNotInCutscene()
-        {
-            //RLog.Msg("Checking if player is in cutscene");
-            return CutsceneManager._instance._activeCutscene == null;
-        }
-        yield return CustomWaitUntil.WaitUntil(new Func<bool>(IsNotInCutscene));
-        //RLog.Msg("_activeCutscene is null. Continuing...");
-        OnCutsceneComplete?.Invoke();
-    }
-
-    private void HandleCutsceneComplete()
-    {
-        //RLog.Msg("HandleCutscene, waitforcutscene coro Complete, doing waitforlocalplayerfirst coro ");
-        WaitForLocalPlayerFirst().RunCoro();
-    }
-
-
-    IEnumerator WaitForLocalPlayerFirst()
-    {
-
-        static bool PlayerExists()
-        {
-            //RLog.Msg("waiting for LocalPlayer._instance...");
-            return LocalPlayer._instance != null;
-        }
-        //Wait until LocalPlayer._instance is not null
-        yield return CustomWaitUntil.WaitUntil(new Func<bool>(PlayerExists));
-        //RLog.Msg("LocalPlayer._instance is not null. Continuing...");
-
-
-        if (_hasControl == false)
-        {
-            //RLog.Msg("waiting for terrainOrflatcontact true, _hasControl is " + _hasControl );
-            static bool PlayerHasControl()
-            {
-                return LocalPlayer.FpCharacter._terrainOrFlatContact == true;
-            }
-            //Wait until player has control
-            yield return CustomWaitUntil.WaitUntil(new Func<bool>(PlayerHasControl));
-            _hasControl = true;
-            //RLog.Msg("terrainOrflatcontact true, set _hasControl to " + _hasControl);
-            SettingsRegistry.CreateSettings(this, null, typeof(Config), callback: OnSettingsUiClosed);
-            SlightDelay().RunCoro();
-            _firstStart = false;
-
-            var axelInstalled = RegisteredMods.Any(x => x.ID == "AxelModMenu");
-            if (axelInstalled)
-            {
-                SonsTools.ShowMessage("You are using both Franky and Axel Mod menu.", 5f);
-                yield return new WaitForSeconds(1f);
-                SonsTools.ShowMessage("Some similar functionality from Franky's menu will not update.", 5f);
-            }
-        }
-        else
-        {
-            //RLog.Msg("_hasControl is" + _hasControl);
-            SettingsRegistry.CreateSettings(this, null, typeof(Config), callback: OnSettingsUiClosed);
-            SlightDelay().RunCoro();
-            _firstStart = false;
-        }
-    }
-    
     IEnumerator SlightDelay()
     {
-        
         if (Config.BadPCDelay.Value > 0f)
         {
             yield return new WaitForSeconds(Config.BadPCDelay.Value);
-            RLog.Msg("Waited for: " + Config.BadPCDelay.Value + " Seconds");
+            RLog.Msg("Waited for: " + Config.BadPCDelay.Value + " Seconds to apply settings");
         }
         Config.UpdateOrRestoreDefaults();
     }

@@ -99,7 +99,18 @@ namespace FrankyModMenu
             VailActorManager.SetGhostPlayer(false);
 
         }
-
+        
+        public static void CreativeMode(bool onoff)
+        {
+            Config.CreativeMode.Value = onoff;
+            if (onoff)
+            {
+                Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
+                return;
+            }
+            Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(false);
+        } 
+        
         public static void InstantBuild(bool onoff)
         {
             Config.InstantBuild.Value = onoff;
@@ -122,7 +133,7 @@ namespace FrankyModMenu
             }
             LocalPlayer.Inventory.HeldOnlyItemController.InfiniteHack = false;
         }
-
+        
         public static void OneHitCutTrees(bool onoff)
         {
             Config.OneHitCutTrees.Value = onoff;
@@ -134,7 +145,7 @@ namespace FrankyModMenu
             }
             Sons.Settings.Cheats.Setup.OneHitTreeCutting = false;
         }
-
+        
         static float? fallDamage;
         public static void NoFallDamage(bool onoff)
         {
@@ -157,7 +168,7 @@ namespace FrankyModMenu
                 TimeOfDayHolder.SetBaseTimeSpeed(0f);
                 return;
             }
-            TimeOfDayHolder.SetBaseTimeSpeed(FrankyModMenu.baseSpeedMultiplier);
+            TimeOfDayHolder.SetBaseTimeSpeed(FrankyModMenu.FbaseSpeedMultiplier);
             //RLog.Msg("StopTime off basetimespeed set to default");
 
         }
@@ -168,17 +179,6 @@ namespace FrankyModMenu
         public static void MarioMode(bool onoff)
         {
             Config.IsMarioMode.Value = onoff;
-        }
-
-        public static void CreativeMode(bool onoff)
-        {
-            Config.CreativeMode.Value = onoff;
-            if (onoff)
-            {
-                Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(true);
-                return;
-            }
-            Sons.Gameplay.GameSetup.GameSetupManager.SetCreativeModeSetting(false);
         }
     }
 }

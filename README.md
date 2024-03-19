@@ -4,6 +4,17 @@ Franky Mod Menu for SOTF using Redloader https://sotf-mods.com/mods/franky/frank
 
 # Changelog
 
+# 1.0.0 Release
+
+Fixed
+- Finalized Code cleanup
+
+Added
+- Optional Compatibility toggles for Axel Menu and BuilderBuddy
+
+Changed
+- Now configurable from Main Menu
+
 # 0.9.9
 
 Fixed
